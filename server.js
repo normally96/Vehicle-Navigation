@@ -37,9 +37,9 @@ io.on('connection',function(socket){			// đoạn chương trình sẽ chạy kh
 		MongoClient.connect(url, function(err, db) {
  		 if (err) throw err;
   		var dbo = db.db("mydb");
-  		dbo.collection("customers").find({}).toArray(function(err, result){
+  		dbo.collection("customers").find({}).toArray(function(err, result){  //lấy tất cả file trong collection customers
    		 if (err) throw err;
-   		 console.log(result);
+   		 console.log(result);     // lấy kết quả in lên màn hình
   		  db.close();
   			});
 }		);
