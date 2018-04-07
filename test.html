@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+     <!-- jQuery library -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <!-- Socket.io Library -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Polylines</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+        width: 50% ;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="map"></div>
+    <button id="Nut1" type="button" class="btn btn-danger">Nut1</button>  <!-- Tạo một nút nhấn có tên là Nut1 -->
+   <button id="Nut2" class="btn btn-danger">Nut2</button>  
+    <script>
+      var socket = io();
+       $("#Nut1").click(function(){            // Khi Nut1 được nhấn thì sẽ phát lên server một 
+           socket.emit('Nut1','');             // tín hiệu mở đầu là Nut1
+       });
+        $("#Nut2").click(function(){
+            socket.emit('Nut2',"");
+       });
+
+      // This example creates a 2-pixel-wide red polyline showing the path of
+      // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+      // Australia which was made by Charles Kingsford Smith.
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: {lat: 10.851407, lng: 106.772211},
+          mapTypeId: 'terrain'
+        });
+
+        var flightPlanCoordinates = [
+          {lat: 10.851407, lng: 106.772211},
+          {lat: 10.77835, lng: 106.695792},
+          {lat: 10.779492, lng: 106.684934},
+          {lat: 10.786885, lng: 106.680707}
+        ];
+        var flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap">
+    </script>
+  </body>
+</html>
