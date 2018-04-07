@@ -21,11 +21,11 @@ io.on('connection',function(socket){			// đoạn chương trình sẽ chạy kh
 	socket.on('customEvent',function(msg){				//nếu nhận một tin nhắm với mã là Nut1 thì sẽ xử lý tín hiệu msg
 		socket.broadcast.emit('message','heloo arduino');
 		console.log('ok web');
-		MongoClient.connect(url, function(err, db) {
+		MongoClient.connect(url, function(err, db) {			// hàm connect trực tiếp với database
  		 if (err) throw err;
-  		var dbo = db.db("mydb");
+  		var dbo = db.db("mydb"); 								//
   			//var myobj = { name: "Company Inc", address: "Highway 38" };
-  			dbo.collection("customers").insertOne(msg, function(err, res) {
+  			dbo.collection("customers").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
     		if (err) throw err;
     		console.log("1 document inserted");
     		db.close();
