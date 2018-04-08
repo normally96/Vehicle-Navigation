@@ -14,9 +14,16 @@ app.use(cors());
 app.use('/public', express.static('public'));
 
 app.get('/', function(req,res){
-  res.sendFile(__dirname + '/ChartJsTest.html');    // gửi file html lên máy
+  res.sendFile(__dirname + '/test.html');    // gửi file html lên máy
 });
 
+app.get('/googlemap',(req,res)=>{
+	res.sendFile(__dirname+ '/googlemap.html');
+});
+
+app.get('/chart',(req,res)=>{
+	res.sendFile(__dirname+ '/ChartJsTest.html');
+});
 // create a server for Socket.io
 const server = http.Server(app);
 
@@ -29,27 +36,36 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 		socket.broadcast.emit('message','heloo arduino');
 		console.log('ok web');
 		// insert sample data to DB
-		myDB.collection("customers").insertOne({ message: msg }, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
+		myDB.collection("customers").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
 			if (!err) {
 				console.log('inserted successfully!');
-				console.log(res);
+				//console.log(res);
 			}
 		});
 	});
 
-	socket.on('rpm',function(msg){
+	socket.on('UpdateGGmap',function(msg){
 		myDB.collection("customers").find({}).toArray(function(err, result){  //lấy tất cả file trong collection customers
 			if (!err) {
-				console.log(result);
+				var kinh=[];
+				var vi=[];
+				for (i=0; i < result.length ;i++){
+					
+					kinh.push(result[i].data[0]);
+					vi.push(result[i].data[1]);
+					//console.log(kinh[i] + '  ' + vi[i]);
+				}
+				console.log({"Kinhdo": kinh,"vido": vi});
+				socket.emit('updateGPS',{"kinhdo": kinh,"vido": vi})
 			}
 		});
-		console.log('ok rpm');
+		
 	});
 });
 
 
 process.once('dbReady', () => {
-	myDB = global.connection.db('normally');
+	myDB = global.connection.db('mydb');
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server started on port 3000...');
 	});
