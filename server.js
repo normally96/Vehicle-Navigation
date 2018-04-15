@@ -35,11 +35,24 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 	socket.on('customEvent',function(msg){				//nếu nhận một tin nhắm với mã là Nut1 thì sẽ xử lý tín hiệu msg
 		socket.broadcast.emit('message','heloo arduino');
 		console.log('ok web');
+		var time = new Date().getTime();
+		msg.time = time;
 		// insert sample data to DB
-		myDB.collection("customers").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
+		myDB.collection("status").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
 			if (!err) {
 				console.log('inserted successfully!');
 				//console.log(res);
+			}
+		});
+	});
+	socket.on('chartemit',function(msg){
+		myDB.collection("status").find({}).toArray(function(err, result){  //lấy tất cả file trong collection customers
+			if (!err) {
+					var d1=[];
+					for (i=0; i < result.length ;i++){
+						d1.push(result[i].d1);
+					}
+					socket.emit('updateChartJs',d1);
 			}
 		});
 	});
