@@ -41,13 +41,13 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 		myDB.collection("status").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
 			if (!err) {
 				console.log('inserted successfully!');
-				//console.log(res);
 			}
 		});
 	});
 	socket.on('chartemit',function(msg){
-		myDB.collection("status").find({}).toArray(function(err, result){  //lấy tất cả file trong collection customers
+		myDB.collection("status").find({ $and: [{time: {$gte : Number(msg[0])}},{time: {$lte : Number(msg[1])}}]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
 			if (!err) {
+					console.log(result);
 					var d1=[];
 					for (i=0; i < result.length ;i++){
 						d1.push(result[i].d1);
@@ -66,7 +66,6 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 					
 					kinh.push(result[i].GPS[0]);
 					vi.push(result[i].GPS[1]);
-					//console.log(kinh[i] + '  ' + vi[i]);
 				}
 				console.log({"Kinhdo": kinh,"vido": vi});
 				socket.emit('updateGPS',{"kinhdo": kinh,"vido": vi})
