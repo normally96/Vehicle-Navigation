@@ -51,8 +51,8 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 				var vi=[];
 				for (i=0; i < result.length ;i++){
 					
-					kinh.push(result[i].data[0]);
-					vi.push(result[i].data[1]);
+					kinh.push(result[i].GPS[0]);
+					vi.push(result[i].GPS[1]);
 					//console.log(kinh[i] + '  ' + vi[i]);
 				}
 				console.log({"Kinhdo": kinh,"vido": vi});

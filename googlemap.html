@@ -14,8 +14,8 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 50%;
-        width: 50% ;
+        height: 80%;
+        width: 80% ;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
@@ -31,21 +31,21 @@
     <div id="map"></div>
     <button id="Update" type="button" class="btn btn-danger">Update</button>  <!-- Tạo một nút nhấn có tên là Nut1 -->
     <script>
-    	var GPS={};
+    	// var GPS={};
       var socket = io();
        $("#Update").click(function(){            // Khi Nut1 được nhấn thì sẽ phát lên server một 
            socket.emit('UpdateGGmap','');             // tín hiệu mở đầu là Nut1
        });
        socket.on('updateGPS',(msg)=>{	
-       		GPS=[];GPS=msg;
+       		var newLocations = msg;
        		//console.log(GPS);
-       		initMap();
+       		initMap(newLocations);
        });
       // This example creates a 2-pixel-wide red polyline showing the path of
       // the first trans-Pacific flight between Oakland, CA, and Brisbane,
       // Australia which was made by Charles Kingsford Smith.
 
-      function initMap() {
+      function initMap(locations) {
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 2,
           center: {lat: 10.851407, lng: 106.772211},
@@ -56,8 +56,8 @@
           {lat: 10.851407, lng: 106.772211}
         ];
         
-        for ( i=0; i < GPS.vido.length ;i++){
-			flightPlanCoordinates.push({lat: GPS.kinhdo[i], lng: GPS.vido[i]});	
+        for ( i=0; i < locations.vido.length ;i++){
+			flightPlanCoordinates.push({lat: locations.kinhdo[i], lng: locations.vido[i]});	
 		};
         var flightPath = new google.maps.Polyline({
           path: flightPlanCoordinates,
