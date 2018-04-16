@@ -50,23 +50,23 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 	});
 	socket.on('chartemit',function(msg){
 		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime();
-		var timeTo 	 = new Date(2018,3,Number(msg.to[0])  ,Number(msg.to[1]),Number(msg.to[2]),0,0).getTime();
+		var timeTo 	 = new Date(2018,3,msg.to[0],msg.to[1],msg.to[2],0,0).getTime();
 		
 		myDB.collection("status").find({ $and: [{time: {$gte : Number(timeFrom)}},{time: {$lte : Number(timeTo) } }]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
 			if (!err) {
-					console.log(result);
-					var d1=[];
+					console.log(result[msg.sensor]);
+					var dataEmit=[];
 					for (i=0; i < result.length ;i++){
-						d1.push(result[i].d1);
+						dataEmit.push(result[i][msg.sensor]);
 					}
-					socket.emit('updateChartJs',d1);
+					socket.emit('updateChartJs',dataEmit);
 			}
 		});
 	});
 
 	socket.on('UpdateGGmap',function(msg){
 		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime();
-		var timeTo 	 = new Date(2018,3,Number(msg.to[0])  ,Number(msg.to[1]),Number(msg.to[2]),0,0).getTime();
+		var timeTo 	 = new Date(2018,3,msg.to[0] ,msg.to[1],msg.to[2],0,0).getTime();
 		console.log([timeFrom,timeTo]);
 		myDB.collection("status").find({ $and: [{time: {$gte : Number(timeFrom)}},{time: {$lte : Number(timeTo) } }]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
 			if (!err) {
@@ -77,7 +77,7 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 					kinh.push(result[i].GPS[0]);
 					vi.push(result[i].GPS[1]);
 				}
-				console.log({"Kinhdo": kinh,"vido": vi});
+				//console.log({"Kinhdo": kinh,"vido": vi});
 				socket.emit('updateGPS',{"kinhdo": kinh,"vido": vi})
 			}
 		});

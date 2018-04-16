@@ -79,9 +79,9 @@
          
           var timeGet= {
             from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
-            to   : [$("#fromDate").val(),$("#toHour").val(),$("#toMinute").val()]
+            to   : [$("#toDate").val(),$("#toHour").val(),$("#toMinute").val()]
           };      
-
+          console.log(timeGet);
           socket.emit('UpdateGGmap',timeGet);               // tín hiệu mở đầu là Nut1
        });
 

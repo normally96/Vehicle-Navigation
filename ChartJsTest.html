@@ -17,10 +17,17 @@
 </head>
 
 <body>
+	
+	<div class="col-sm-2">
+		<label for="ex1">Sensor</label>
+		<input class="form-control" id="getSensor" type="text">
+	</div>
+	
 	<button id="chartemit" type="button" class="btn btn-danger">Update chart</button>
+
 	<div class="container">
  		 <form>
-   			<div class="form-group row">
+ 	  			<div class="form-group row">
    				<div class="col-sm-1"><h2>From</h2></div>
 
 	      		<div class="col-sm-2">
@@ -67,14 +74,15 @@
 	<br>
 	<script>
 		var socket = io();
-      		 $("#chartemit").click(function(){  
+      		 $("#chartemit").click(function(){      
       		 var timeGet= {
       		 	from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
-      		 	to   : [$("#fromDate").val(),$("#toHour").val(),$("#toMinute").val()]
-      		 };          
+      		 	to   : [$("#toDate").val(),$("#toHour").val(),$("#toMinute").val()]
+      		 };      
+      		 timeGet.sensor = $("#getSensor").val();    
           	 socket.emit('chartemit',timeGet);   
           	 console.log(timeGet);        
-      	 });
+      	});
 
       	socket.on('updateChartJs', (msg)=>{	
        		var newLocations = msg;

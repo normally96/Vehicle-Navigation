@@ -51,27 +51,30 @@
     
     
     <script>
+    	var placePlan = [];
+      	var socket = io();
 
-      var socket = io();
+      	socket.on('liveUpdates', (msg)=>{
 
-      socket.on('liveUpdates', (msg)=>{
-      	 $("#ADC1").text(msg.a1) ;
-      	 $("#ADC2").text(msg.a2) ;
-      	 $("#ADC3").text(msg.a3) ;
-      	 $("#D1").text(msg.d1) ;
-      	 $("#D2").text(msg.d2) ;
-      	 $("#D3").text(msg.d3) ;
-      	 $("#D4").text(msg.d4) ;
-      	 $("#D5").text(msg.d5) ;
-      	 $("#io16").text(msg.io16) ;
-      	 $("#io12").text(msg.io12) ;
-      	 $("#io13").text(msg.io13) ;
-      	 $("#io14").text(msg.io14) ;
-      	 $("#io15").text(msg.io15) ;
-      	 var newLocations = msg.GPS;
-      	 initMap(newLocations);
-      	console.log(msg);
-      });
+      	 	$("#ADC1").text(msg.a1) ;
+      	 	$("#ADC2").text(msg.a2) ;
+      	 	$("#ADC3").text(msg.a3) ;
+      	 	$("#D1").text(msg.d1) ;
+      	 	$("#D2").text(msg.d2) ;
+      	 	$("#D3").text(msg.d3) ;
+      	 	$("#D4").text(msg.d4) ;
+      	 	$("#D5").text(msg.d5) ;
+      	 	$("#io16").text(msg.io16) ;
+      	 	$("#io12").text(msg.io12) ;
+      	 	$("#io13").text(msg.io13) ;
+      	 	$("#io14").text(msg.io14) ;
+      	 	$("#io15").text(msg.io15) ;
+
+      	 	var newLocations = msg.GPS;
+
+      	 	initMap(newLocations);
+      		console.log(msg);
+      	});
 
       function initMap(locations) {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -80,11 +83,11 @@
           mapTypeId: 'terrain'
         });
 
-        var flightPlanCoordinates = [
-          {lat: 10.851407, lng: 106.772211}
-        ];
+        var flightPlanCoordinates = [ ];
         
-			flightPlanCoordinates.push({lat: locations[0], lng: locations[1]});	
+		placePlan.push({lat: locations[0], lng: locations[1]});	
+
+		flightPlanCoordinates= placePlan;
 		
         var flightPath = new google.maps.Polyline({
           path: flightPlanCoordinates,
