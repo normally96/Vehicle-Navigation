@@ -24,6 +24,10 @@ app.get('/googlemap',(req,res)=>{
 app.get('/chart',(req,res)=>{
 	res.sendFile(__dirname+ '/ChartJsTest.html');
 });
+
+app.get('/liveUpdates',(req,res)=>{
+	res.sendFile(__dirname+ '/liveUpdates.html');
+});	
 // create a server for Socket.io
 const server = http.Server(app);
 
@@ -33,7 +37,7 @@ const io = SocketIO(server);
 io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy khi có một kết nối đến server 
 	console.log('socket connection');			// in ra màn hình để debug
 	socket.on('customEvent',function(msg){				//nếu nhận một tin nhắm với mã là Nut1 thì sẽ xử lý tín hiệu msg
-		socket.broadcast.emit('message','heloo arduino');
+		socket.broadcast.emit('liveUpdates',msg);
 		console.log('ok web');
 		var time = new Date().getTime();
 		msg.time = time;
@@ -45,7 +49,10 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 		});
 	});
 	socket.on('chartemit',function(msg){
-		myDB.collection("status").find({ $and: [{time: {$gte : Number(msg[0])}},{time: {$lte : Number(msg[1])}}]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
+		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime();
+		var timeTo 	 = new Date(2018,3,Number(msg.to[0])  ,Number(msg.to[1]),Number(msg.to[2]),0,0).getTime();
+		
+		myDB.collection("status").find({ $and: [{time: {$gte : Number(timeFrom)}},{time: {$lte : Number(timeTo) } }]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
 			if (!err) {
 					console.log(result);
 					var d1=[];
@@ -58,7 +65,10 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 	});
 
 	socket.on('UpdateGGmap',function(msg){
-		myDB.collection("customers").find({}).toArray(function(err, result){  //lấy tất cả file trong collection customers
+		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime();
+		var timeTo 	 = new Date(2018,3,Number(msg.to[0])  ,Number(msg.to[1]),Number(msg.to[2]),0,0).getTime();
+		console.log([timeFrom,timeTo]);
+		myDB.collection("status").find({ $and: [{time: {$gte : Number(timeFrom)}},{time: {$lte : Number(timeTo) } }]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
 			if (!err) {
 				var kinh=[];
 				var vi=[];

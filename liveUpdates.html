@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+     <!-- jQuery library -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <!-- Socket.io Library -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Live Updates</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+        width: 80% ;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+  	<div id="map"></div>
+   	<div class="row">
+  		<div class="col-sm-4">
+  			<br>
+  			<span>ADC1  : </span> <span id = "ADC1"></span> <br>
+  			<span>ADC2  : </span> <span id = "ADC2"></span> <br>
+  			<span>ADC3  : </span> <span id = "ADC3"></span> <br>
+  			<span>D1  : </span> <span id = "D1"></span> <br>
+  			<span>D2  : </span> <span id = "D2"></span> <br>
+  			<span>D3  : </span> <span id = "D3"></span> <br>
+  			<span>D4  : </span> <span id = "D4"></span> <br>
+  			<span>io16  : </span> <span id = "io16"></span> <br>
+  			<span>io12  : </span> <span id = "io12"></span> <br>
+  			<span>io13  : </span> <span id = "io13"></span> <br>
+  			<span>io14  : </span> <span id = "io14"></span> <br>
+  			<span>io15  : </span> <span id = "io15"></span> <br>
+  			
+  		</div>
+  		
+	</div>
+    
+    
+    <script>
+
+      var socket = io();
+
+      socket.on('liveUpdates', (msg)=>{
+      	 $("#ADC1").text(msg.a1) ;
+      	 $("#ADC2").text(msg.a2) ;
+      	 $("#ADC3").text(msg.a3) ;
+      	 $("#D1").text(msg.d1) ;
+      	 $("#D2").text(msg.d2) ;
+      	 $("#D3").text(msg.d3) ;
+      	 $("#D4").text(msg.d4) ;
+      	 $("#D5").text(msg.d5) ;
+      	 $("#io16").text(msg.io16) ;
+      	 $("#io12").text(msg.io12) ;
+      	 $("#io13").text(msg.io13) ;
+      	 $("#io14").text(msg.io14) ;
+      	 $("#io15").text(msg.io15) ;
+      	 var newLocations = msg.GPS;
+      	 initMap(newLocations);
+      	console.log(msg);
+      });
+
+      function initMap(locations) {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 2,
+          center: {lat: 10.851407, lng: 106.772211},
+          mapTypeId: 'terrain'
+        });
+
+        var flightPlanCoordinates = [
+          {lat: 10.851407, lng: 106.772211}
+        ];
+        
+			flightPlanCoordinates.push({lat: locations[0], lng: locations[1]});	
+		
+        var flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+      }
+    </script>
+   
+  </body>
+</html>

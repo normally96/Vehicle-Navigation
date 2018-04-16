@@ -30,12 +30,12 @@
 
       			<div class="col-sm-2">
         			<label for="ex2">Hour</label>
-        			<input class="form-control" id="toDate" type="text">
+        			<input class="form-control" id="fromHour" type="text">
      			 </div>
 
      			 <div class="col-sm-2">
         			<label for="ex2">Minute</label>
-        			<input class="form-control" id="toDate" type="text">
+        			<input class="form-control" id="fromMinute" type="text">
      			 </div> 
     		</div>
 
@@ -44,17 +44,17 @@
 
 	      		<div class="col-sm-2">
 		        	<label for="ex1">Date</label>
-		        	<input class="form-control" id="fromDate" type="text">
+		        	<input class="form-control" id="toDate" type="text">
 	     		</div>
 
       			<div class="col-sm-2">
         			<label for="ex2">Hour</label>
-        			<input class="form-control" id="toDate" type="text">
+        			<input class="form-control" id="toHour" type="text">
      			 </div>
 
      			 <div class="col-sm-2">
         			<label for="ex2">Minute</label>
-        			<input class="form-control" id="toDate" type="text">
+        			<input class="form-control" id="toMinute" type="text">
      			 </div> 
     		</div>
   		</form>
@@ -67,9 +67,13 @@
 	<br>
 	<script>
 		var socket = io();
-      		 $("#chartemit").click(function(){            
-          	 socket.emit('chartemit',[$("#fromDate").val(),$("#toDate").val()]);   
-          	 console.log([$("#fromDate").val(),$("#toDate").val()]);        
+      		 $("#chartemit").click(function(){  
+      		 var timeGet= {
+      		 	from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
+      		 	to   : [$("#fromDate").val(),$("#toHour").val(),$("#toMinute").val()]
+      		 };          
+          	 socket.emit('chartemit',timeGet);   
+          	 console.log(timeGet);        
       	 });
 
       	socket.on('updateChartJs', (msg)=>{	

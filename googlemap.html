@@ -27,15 +27,64 @@
     </style>
   </head>
   <body>
+    <button id="Update" type="button" class="btn btn-danger">Update</button>  <!-- Tạo một nút nhấn có tên là Nut1 -->
+    <div class="container">
+     <form>
+        <div class="form-group row">
+          <div class="col-sm-1"><h2>From</h2></div>
+
+            <div class="col-sm-2">
+              <label for="ex1">Date</label>
+              <input class="form-control" id="fromDate" type="text">
+          </div>
+
+            <div class="col-sm-2">
+              <label for="ex2">Hour</label>
+              <input class="form-control" id="fromHour" type="text">
+           </div>
+
+           <div class="col-sm-2">
+              <label for="ex2">Minute</label>
+              <input class="form-control" id="fromMinute" type="text">
+           </div> 
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-1"><h2>To</h2></div>
+
+            <div class="col-sm-2">
+              <label for="ex1">Date</label>
+              <input class="form-control" id="toDate" type="text">
+          </div>
+
+            <div class="col-sm-2">
+              <label for="ex2">Hour</label>
+              <input class="form-control" id="toHour" type="text">
+           </div>
+
+           <div class="col-sm-2">
+              <label for="ex2">Minute</label>
+              <input class="form-control" id="toMinute" type="text">
+           </div> 
+        </div>
+      </form>
+  </div>
 
     <div id="map"></div>
-    <button id="Update" type="button" class="btn btn-danger">Update</button>  <!-- Tạo một nút nhấn có tên là Nut1 -->
+    
     <script>
     	// var GPS={};
       var socket = io();
        $("#Update").click(function(){            // Khi Nut1 được nhấn thì sẽ phát lên server một 
-           socket.emit('UpdateGGmap','');             // tín hiệu mở đầu là Nut1
+         
+          var timeGet= {
+            from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
+            to   : [$("#fromDate").val(),$("#toHour").val(),$("#toMinute").val()]
+          };      
+
+          socket.emit('UpdateGGmap',timeGet);               // tín hiệu mở đầu là Nut1
        });
+
        socket.on('updateGPS',(msg)=>{	
        		var newLocations = msg;
        		//console.log(GPS);
@@ -57,8 +106,8 @@
         ];
         
         for ( i=0; i < locations.vido.length ;i++){
-			flightPlanCoordinates.push({lat: locations.kinhdo[i], lng: locations.vido[i]});	
-		};
+			   flightPlanCoordinates.push({lat: locations.kinhdo[i], lng: locations.vido[i]});	
+		    };
         var flightPath = new google.maps.Polyline({
           path: flightPlanCoordinates,
           geodesic: true,
