@@ -1,5 +1,5 @@
 const MongClient = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017/";
+const url = "mongodb://normally96:Hieucom5196@ds259105.mlab.com:59105/prodata";
 
 MongClient.connect(url, (err, db) => {
   if (!err) {

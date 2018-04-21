@@ -87,7 +87,7 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 
 
 process.once('dbReady', () => {
-	myDB = global.connection.db('mydb');
+	myDB = global.connection.db('prodata');
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server started on port 3000...');
 	});
