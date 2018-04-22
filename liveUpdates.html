@@ -2,7 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
      <!-- jQuery library -->
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <!-- Socket.io Library -->
@@ -28,77 +28,139 @@
     </style>
   </head>
   <body>
-  	<div id="map"></div>
-   	<div class="row">
-  		<div class="col-sm-4">
-  			<br>
-  			<span>ADC1  : </span> <span id = "ADC1"></span> <br>
-  			<span>ADC2  : </span> <span id = "ADC2"></span> <br>
-  			<span>ADC3  : </span> <span id = "ADC3"></span> <br>
-  			<span>D1  : </span> <span id = "D1"></span> <br>
-  			<span>D2  : </span> <span id = "D2"></span> <br>
-  			<span>D3  : </span> <span id = "D3"></span> <br>
-  			<span>D4  : </span> <span id = "D4"></span> <br>
-  			<span>io16  : </span> <span id = "io16"></span> <br>
-  			<span>io12  : </span> <span id = "io12"></span> <br>
-  			<span>io13  : </span> <span id = "io13"></span> <br>
-  			<span>io14  : </span> <span id = "io14"></span> <br>
-  			<span>io15  : </span> <span id = "io15"></span> <br>
-  			
-  		</div>
-  		
-	</div>
-    
+    <div class="row">
+      <div class="col-sm-5">
+        <div class ="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <span>ADC1  : </span> <span id = "ADC1"></span> <br>
+            <span>ADC2  : </span> <span id = "ADC2"></span> <br>
+            <span>ADC3  : </span> <span id = "ADC3"></span> <br>
+            <span>D1  : </span> <span id = "D1"></span> <br>
+            <span>D2  : </span> <span id = "D2"></span> <br>
+            <span>D3  : </span> <span id = "D3"></span> <br>
+            <span>D4  : </span> <span id = "D4"></span> <br>
+            <span>io16  : </span> <span id = "io16"></span> <br>
+            <span>io12  : </span> <span id = "io12"></span> <br>
+            <span>io13  : </span> <span id = "io13"></span> <br>
+            <span>io14  : </span> <span id = "io14"></span> <br>
+            <span>io15  : </span> <span id = "io15"></span> <br>
+
+            <canvas id="adc1Chart" style="width:90%;height:250px;"></canvas>
+            <canvas id="adc2Chart" style="width:90%;height:250px;"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1">.col-sm-1</div>
+      <div class="col-sm-6">
+        <div id="map" style="width:90%;height:250px;"></div>
+        <canvas id="adc3Chart" style="width:90%;height:250px;"></canvas>
+        <canvas id="d1Chart" style="width:90%;height:250px;"></canvas>
+      </div>
+    </div>  
     
     <script>
     	var placePlan = [];
-      	var socket = io();
+      var socket = io();
+      initChart("adc1Chart", "ADC1 Chart", "");
+      initChart("adc2Chart", "ADC2 Chart", "");
+      initChart("adc3Chart", "ADC3 Chart", "");
+      initChart("d1Chart", "D1 Chart", "");
+      socket.on('liveUpdates', (msg)=>{
 
-      	socket.on('liveUpdates', (msg)=>{
+      	$("#ADC1").text(msg.a1) ;
+      	$("#ADC2").text(msg.a2) ;
+      	$("#ADC3").text(msg.a3) ;
+      	$("#D1").text(msg.d1) ;
+      	$("#D2").text(msg.d2) ;
+      	$("#D3").text(msg.d3) ;
+      	$("#D4").text(msg.d4) ;
+      	$("#D5").text(msg.d5) ;
+      	$("#io16").text(msg.io16) ;
+      	$("#io12").text(msg.io12) ;
+      	$("#io13").text(msg.io13) ;
+      	$("#io14").text(msg.io14) ;
+      	$("#io15").text(msg.io15) ;
 
-      	 	$("#ADC1").text(msg.a1) ;
-      	 	$("#ADC2").text(msg.a2) ;
-      	 	$("#ADC3").text(msg.a3) ;
-      	 	$("#D1").text(msg.d1) ;
-      	 	$("#D2").text(msg.d2) ;
-      	 	$("#D3").text(msg.d3) ;
-      	 	$("#D4").text(msg.d4) ;
-      	 	$("#D5").text(msg.d5) ;
-      	 	$("#io16").text(msg.io16) ;
-      	 	$("#io12").text(msg.io12) ;
-      	 	$("#io13").text(msg.io13) ;
-      	 	$("#io14").text(msg.io14) ;
-      	 	$("#io15").text(msg.io15) ;
-
-      	 	var newLocations = msg.GPS;
-
-      	 	initMap(newLocations);
-      		console.log(msg);
-      	});
-
-      function initMap(locations) {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 2,
-          center: {lat: 10.851407, lng: 106.772211},
-          mapTypeId: 'terrain'
-        });
-
-        var flightPlanCoordinates = [ ];
+      	var newLocations = msg.GPS;
+        var minuteNow = new Date(Number(msg.time)).getMinutes();
+        var hourNow = new Date(msg.time).getHours();
+        timeNow = hourNow + ':' +minuteNow;
         
-		placePlan.push({lat: locations[0], lng: locations[1]});	
+        addData(window.adc1Chart,timeNow,Number(msg.a1));
+        addData(window.adc2Chart,timeNow,Number(msg.a2));
+        addData(window.adc3Chart,timeNow,Number(msg.a3));
+        addData(window.d1Chart,timeNow,Number(msg.d1));
 
-		flightPlanCoordinates= placePlan;
+      	initMap(newLocations);
+        console.log(msg);
+      });
+
+    function initMap(locations) {
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 2,
+        center: {lat: 10.851407, lng: 106.772211},
+        mapTypeId: 'terrain'
+      });
+
+      var flightPlanCoordinates = [ ];
+        
+		  placePlan.push({lat: locations[0], lng: locations[1]});	
+
+		  flightPlanCoordinates= placePlan;
 		
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
+      var flightPath = new google.maps.Polyline({
+        path: flightPlanCoordinates,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
 
         flightPath.setMap(map);
-      }
+    }
+    
+    function initChart(elementID, labels, data) {
+      var ctx = document.getElementById(elementID);
+      window[elementID] = new Chart(ctx, {
+          type: 'line',
+            data: {
+              labels: data,
+              datasets: [{
+                label: labels,
+                  data: data,
+                  backgroundColor: [
+                      'rgba(0, 255, 0, 0.3)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)'
+                  ],
+                  borderWidth: 1,
+                  lineTension : 0.1
+              }]
+          },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                      beginAtZero:true
+                  }
+              }]
+              }
+          }
+      });
+    }
+
+    function addData(chart, label, data) {
+        chart.data.labels.push(label);
+
+        chart.data.datasets.forEach((dataset) => {
+          dataset.data.push(data);
+        });
+          
+        chart.update();
+    }
+
     </script>
    
   </body>

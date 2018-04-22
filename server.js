@@ -37,10 +37,10 @@ const io = SocketIO(server);
 io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy khi có một kết nối đến server 
 	console.log('socket connection');			// in ra màn hình để debug
 	socket.on('customEvent',function(msg){				//nếu nhận một tin nhắm với mã là Nut1 thì sẽ xử lý tín hiệu msg
-		socket.broadcast.emit('liveUpdates',msg);
 		console.log('ok web');
 		var time = new Date().getTime();
 		msg.time = time;
+		socket.broadcast.emit('liveUpdates',msg);
 		// insert sample data to DB
 		myDB.collection("status").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
 			if (!err) {
