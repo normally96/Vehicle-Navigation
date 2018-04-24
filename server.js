@@ -59,7 +59,7 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 						dataEmit.push(result[i][msg.sensor]);
 					} 
 					socket.emit('updateChartJs',dataEmit); // emit gói updatechartJs với dữ liệu đã lọc
-			}
+
 		});
 	});
 
