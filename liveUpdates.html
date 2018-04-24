@@ -62,7 +62,7 @@
     <script>
     	var placePlan = [];
       var socket = io();
-      initChart("adc1Chart", "ADC1 Chart", "");
+      initChart("adc1Chart", "ADC1 Chart", "");     // hàm tạo chart ban đầu
       initChart("adc2Chart", "ADC2 Chart", "");
       initChart("adc3Chart", "ADC3 Chart", "");
       initChart("d1Chart", "D1 Chart", "");
@@ -87,7 +87,7 @@
         var hourNow = new Date(msg.time).getHours();
         timeNow = hourNow + ':' +minuteNow;
         
-        addData(window.adc1Chart,timeNow,Number(msg.a1));
+        addData(window.adc1Chart,timeNow,Number(msg.a1));   // hàm addData khi có thêm dữ liệu mới
         addData(window.adc2Chart,timeNow,Number(msg.a2));
         addData(window.adc3Chart,timeNow,Number(msg.a3));
         addData(window.d1Chart,timeNow,Number(msg.d1));
@@ -96,7 +96,7 @@
         console.log(msg);
       });
 
-    function initMap(locations) {
+    function initMap(locations) {                     // hàm tạo Map
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 2,
         center: {lat: 10.851407, lng: 106.772211},

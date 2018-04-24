@@ -77,14 +77,13 @@
     <script>
     	// var GPS={};
       var socket = io();
-       $("#Update").click(function(){            // Khi Nut1 được nhấn thì sẽ phát lên server một 
-         
+       $("#Update").click(function(){            
           var timeGet= {
             from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
             to   : [$("#toDate").val(),$("#toHour").val(),$("#toMinute").val()]
           };      
           console.log(timeGet);
-          socket.emit('UpdateGGmap',timeGet);               // tín hiệu mở đầu là Nut1
+          socket.emit('UpdateGGmap',timeGet);              
        });
 
        socket.on('updateGPS',(msg)=>{	
@@ -122,7 +121,7 @@
       }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap">  // dùng API của googlemap
     </script>
   </body>
 </html>

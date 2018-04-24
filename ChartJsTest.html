@@ -17,7 +17,7 @@
 </head>
 
 <body>
-	<div class = "row">
+	<div class = "row">							<!-- dùng bootstrap tạo định dạng cho trang wed -->
 		<div class="col-sm-5">
 			<div class = "row">
 				<div class="col-sm-1"></div>
@@ -67,29 +67,29 @@
 	<br>
 	<script>
 		var socket = io();
-      		 $("#chartemit").click(function(){      
-      		 var timeGet= {
+      		 $("#chartemit").click(function(){      	
+      		 var timeGet= {                             // tạo hàm lấy thời gian Input
       		 	from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
       		 	to   : [$("#toDate").val(),$("#toHour").val(),$("#toMinute").val()]
       		 };      
       		 timeGet.sensor = $("#getSensor").val();    
-          	 socket.emit('chartemit',timeGet);   
-          	 console.log(timeGet);        
+          	 socket.emit('chartemit',timeGet);   	// phát động tin nhắn chartemit với tham sô timeGet chứa thời gian và sensor cần lấy
+          	        
       	});
 
-      	socket.on('updateChartJs', (msg)=>{	
+      	socket.on('updateChartJs', (msg)=>{		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
        		var newLocations = msg;
       		initChart("myChart", $("#getSensor").val(), msg);
        	});
 
-      	function addData(chart, label, data) {
+      	function addData(chart, label, data) {     // hàm thêm Data vào Chart
   			chart.data.labels.push(label);
 			chart.data.datasets.forEach((dataset) => {
     		dataset.data.push(data);
   			});
   		  	chart.update();
 		}
-		function initChart(elementID, labels, data) {
+		function initChart(elementID, labels, data) {			// hàm tạo chart đầu tiên
 			var ctx = document.getElementById(elementID);
 			window.myLineChart = new Chart(ctx, {
 	  			type: 'line',

@@ -36,35 +36,34 @@ const io = SocketIO(server);
 
 io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy khi có một kết nối đến server 
 	console.log('socket connection');			// in ra màn hình để debug
-	socket.on('customEvent',function(msg){				//nếu nhận một tin nhắm với mã là Nut1 thì sẽ xử lý tín hiệu msg
+	socket.on('customEvent',function(msg){		// nhận tập tin customEvent từ ESP8266
 		console.log('ok web');
-		var time = new Date().getTime();
+		var time = new Date().getTime();		// tạo thêm hàm thời gian để đưa lên server
 		msg.time = time;
-		socket.broadcast.emit('liveUpdates',msg);
+		socket.broadcast.emit('liveUpdates',msg); // gửi tệp vừa đóng gói lên trang liveUpdates
 		// insert sample data to DB
-		myDB.collection("status").insertOne(msg, function(err, res) { // kết nối vào collection customers và inser message từ website vào database
+		myDB.collection("status").insertOne(msg, function(err, res) { // kết nối vào collection status và insert message từ website vào database
 			if (!err) {
 				console.log('inserted successfully!');
 			}
 		});
 	});
-	socket.on('chartemit',function(msg){
-		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime();
+	socket.on('chartemit',function(msg){		// xử lý khi nhận được tín hiệu chartemit 
+		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime(); // xử lý ngày tháng nhận được ra định dạng thời gian chuẩn
 		var timeTo 	 = new Date(2018,3,msg.to[0],msg.to[1],msg.to[2],0,0).getTime();
 		
-		myDB.collection("status").find({ $and: [{time: {$gte : Number(timeFrom)}},{time: {$lte : Number(timeTo) } }]}).toArray(function(err, result){  //lấy tất cả file trong collection customers
-			if (!err) {
+		myDB.collection("status").find({ $and: [{time: {$gte : Number(timeFrom)}},{time: {$lte : Number(timeTo) } }]}).toArray(function(err, result){  //lấy tất cả dữ liệu nằm trong khoản thời gian cần tìm
 					console.log(result[msg.sensor]);
 					var dataEmit=[];
-					for (i=0; i < result.length ;i++){
+					for (i=0; i < result.length ;i++){			// lọc riêng dữ liệu của sensor đã request 
 						dataEmit.push(result[i][msg.sensor]);
-					}
-					socket.emit('updateChartJs',dataEmit);
+					} 
+					socket.emit('updateChartJs',dataEmit); // emit gói updatechartJs với dữ liệu đã lọc
 			}
 		});
 	});
 
-	socket.on('UpdateGGmap',function(msg){
+	socket.on('UpdateGGmap',function(msg){  // xử lý khi nhận request từ trang googlemap
 		var timeFrom = new Date(2018,3,msg.from[0]  ,msg.from[1],msg.from[2],0,0).getTime();
 		var timeTo 	 = new Date(2018,3,msg.to[0] ,msg.to[1],msg.to[2],0,0).getTime();
 		console.log([timeFrom,timeTo]);
@@ -86,7 +85,7 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 });
 
 
-process.once('dbReady', () => {
+process.once('dbReady', () => {   // một khi đã kết nói với database mới khởi động server
 	myDB = global.connection.db('prodata');
 	server.listen(process.env.PORT || 3000, () => {
 		console.log('Server started on port 3000...');
