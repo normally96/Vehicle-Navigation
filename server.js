@@ -2,6 +2,27 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const SocketIO = require('socket.io');
+var net = require('net');			// add module net
+var tcpServer = net.createServer();
+
+tcpServer.on("connection", function(socket){
+	console.log("tcpServer connected");
+	socket.on("data",function(msg){
+		var message = msg.toString();
+		var myobj= JSON.parse(message);
+		global.socketIO.emit('liveUpdates',myobj); // gửi tệp vừa đóng gói lên trang liveUpdates
+		//insert sample data to DB
+		myDB.collection("status").insertOne(myobj, function(err, res) { // kết nối vào collection status và insert message từ website vào database
+			if (!err) {
+				console.log('inserted successfully!');
+			}
+		});
+	});
+});
+
+tcpServer.listen(process.env.PORT || 1334, function(){
+	console.log("tcpServer listen on 1334 port");
+});
 
 require('./connection.js');
 
@@ -34,12 +55,14 @@ const server = http.Server(app);
 // khởi tạo thư viện socket.io
 const io = SocketIO(server);
 
-io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy khi có một kết nối đến server 
+io.on('connection',function(socket) {	// đoạn chương trình sẽ chạy khi có một kết nối đến server 
+	global.socketIO= socket;			
 	console.log('socket connection');			// in ra màn hình để debug
 	socket.on('customEvent',function(msg){		// nhận tập tin customEvent từ ESP8266
 		console.log('ok web');
 		var time = new Date().getTime();		// tạo thêm hàm thời gian để đưa lên server
 		msg.time = time;
+		
 		socket.broadcast.emit('liveUpdates',msg); // gửi tệp vừa đóng gói lên trang liveUpdates
 		// insert sample data to DB
 		myDB.collection("status").insertOne(msg, function(err, res) { // kết nối vào collection status và insert message từ website vào database
@@ -87,7 +110,7 @@ io.on('connection',function(socket) {			// đoạn chương trình sẽ chạy k
 
 process.once('dbReady', () => {   // một khi đã kết nói với database mới khởi động server
 	myDB = global.connection.db('prodata');
-	server.listen(process.env.PORT || 3000, () => {
+	server.listen(process.env.PORT || 1333, () => {
 		console.log('Server started on port 3000...');
 	});
 });

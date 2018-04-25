@@ -67,8 +67,8 @@
       initChart("adc3Chart", "ADC3 Chart", "");
       initChart("d1Chart", "D1 Chart", "");
       socket.on('liveUpdates', (msg)=>{
-
-      	$("#ADC1").text(msg.a1) ;
+        console.log(msg.sensor);
+      	$("#ADC1").text(msg.sensor) ;
       	$("#ADC2").text(msg.a2) ;
       	$("#ADC3").text(msg.a3) ;
       	$("#D1").text(msg.d1) ;
