@@ -60,107 +60,125 @@
     </div>  
     
     <script>
-    	var placePlan = [];
+      var placePlan = [];
       var socket = io();
-      initChart("adc1Chart", "ADC1 Chart", "");     // hàm tạo chart ban đầu
+      initChart("adc1Chart", "ADC1 Chart", ""); // hàm tạo chart ban đầu
       initChart("adc2Chart", "ADC2 Chart", "");
       initChart("adc3Chart", "ADC3 Chart", "");
       initChart("d1Chart", "D1 Chart", "");
-      socket.on('liveUpdates', (msg)=>{
-        console.log(msg.sensor);
-      	$("#ADC1").text(msg.sensor) ;
-      	$("#ADC2").text(msg.a2) ;
-      	$("#ADC3").text(msg.a3) ;
-      	$("#D1").text(msg.d1) ;
-      	$("#D2").text(msg.d2) ;
-      	$("#D3").text(msg.d3) ;
-      	$("#D4").text(msg.d4) ;
-      	$("#D5").text(msg.d5) ;
-      	$("#io16").text(msg.io16) ;
-      	$("#io12").text(msg.io12) ;
-      	$("#io13").text(msg.io13) ;
-      	$("#io14").text(msg.io14) ;
-      	$("#io15").text(msg.io15) ;
 
-      	var newLocations = msg.GPS;
-        var minuteNow = new Date(Number(msg.time)).getMinutes();
-        var hourNow = new Date(msg.time).getHours();
-        timeNow = hourNow + ':' +minuteNow;
-        
-        addData(window.adc1Chart,timeNow,Number(msg.a1));   // hàm addData khi có thêm dữ liệu mới
-        addData(window.adc2Chart,timeNow,Number(msg.a2));
-        addData(window.adc3Chart,timeNow,Number(msg.a3));
-        addData(window.d1Chart,timeNow,Number(msg.d1));
+      // hàm xử lý khi nhận message liveUpdates từ Server
+      socket.on('liveUpdates', (msg) => {
+          console.log(msg.sensor);
 
-      	initMap(newLocations);
-        console.log(msg);
+          // lấy các giá trị cảm biến từ message vừa nhận 
+          $("#ADC1").text(msg.sensor);
+          $("#ADC2").text(msg.a2);
+          $("#ADC3").text(msg.a3);
+          $("#D1").text(msg.d1);
+          $("#D2").text(msg.d2);
+          $("#D3").text(msg.d3);
+          $("#D4").text(msg.d4);
+          $("#D5").text(msg.d5);
+          $("#io16").text(msg.io16);
+          $("#io12").text(msg.io12);
+          $("#io13").text(msg.io13);
+          $("#io14").text(msg.io14);
+          $("#io15").text(msg.io15);
+
+          // lấy giá trị GPS
+          var newLocations = msg.GPS;
+
+          // thêm tạo thời gian hiện tại 
+          var minuteNow = new Date(Number(msg.time)).getMinutes();
+          var hourNow = new Date(msg.time).getHours();
+          timeNow = hourNow + ':' + minuteNow;
+
+          // hàm addData khi có thêm dữ liệu mới  
+          addData(window.adc1Chart, timeNow, Number(msg.a1)); 
+          addData(window.adc2Chart, timeNow, Number(msg.a2));
+          addData(window.adc3Chart, timeNow, Number(msg.a3));
+          addData(window.d1Chart, timeNow, Number(msg.d1));
+
+          // khởi tạo google map với địa chỉ vừa nhận được
+          initMap(newLocations);
+
+          console.log(msg);
       });
 
-    function initMap(locations) {                     // hàm tạo Map
-      var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 2,
-        center: {lat: 10.851407, lng: 106.772211},
-        mapTypeId: 'terrain'
-      });
+      // hàm khởi tạo map
+      function initMap(locations) { 
+          var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 2,
+              center: {
+                  lat: 10.851407,
+                  lng: 106.772211
+              },
+              mapTypeId: 'terrain'
+          });
 
-      var flightPlanCoordinates = [ ];
-        
-		  placePlan.push({lat: locations[0], lng: locations[1]});	
+          var flightPlanCoordinates = [];
 
-		  flightPlanCoordinates= placePlan;
-		
-      var flightPath = new google.maps.Polyline({
-        path: flightPlanCoordinates,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
+          placePlan.push({
+              lat: locations[0],
+              lng: locations[1]
+          });
 
-        flightPath.setMap(map);
-    }
-    
-    function initChart(elementID, labels, data) {
-      var ctx = document.getElementById(elementID);
-      window[elementID] = new Chart(ctx, {
-          type: 'line',
-            data: {
-              labels: data,
-              datasets: [{
-                label: labels,
-                  data: data,
-                  backgroundColor: [
-                      'rgba(0, 255, 0, 0.3)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)'
-                  ],
-                  borderWidth: 1,
-                  lineTension : 0.1
-              }]
-          },
-            options: {
-              scales: {
-                yAxes: [{
-                  ticks: {
-                      beginAtZero:true
+          flightPlanCoordinates = placePlan;
+
+          var flightPath = new google.maps.Polyline({
+              path: flightPlanCoordinates,
+              geodesic: true,
+              strokeColor: '#FF0000',
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+          });
+
+          flightPath.setMap(map);
+      }
+      
+      // hàm khởi tạo chart
+      function initChart(elementID, labels, data) {
+          var ctx = document.getElementById(elementID);
+          window[elementID] = new Chart(ctx, {
+              type: 'line',
+              data: {
+                  labels: data,
+                  datasets: [{
+                      label: labels,
+                      data: data,
+                      backgroundColor: [
+                          'rgba(0, 255, 0, 0.3)'
+                      ],
+                      borderColor: [
+                          'rgba(255,99,132,1)'
+                      ],
+                      borderWidth: 1,
+                      lineTension: 0.1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
                   }
-              }]
               }
-          }
-      });
-    }
+          });
+      }
 
-    function addData(chart, label, data) {
-        chart.data.labels.push(label);
+      // hàm thêm data vào Chart
+      function addData(chart, label, data) {
+          chart.data.labels.push(label);
 
-        chart.data.datasets.forEach((dataset) => {
-          dataset.data.push(data);
-        });
-          
-        chart.update();
-    }
+          chart.data.datasets.forEach((dataset) => {
+              dataset.data.push(data);
+          });
 
+          chart.update();
+      }
     </script>
    
   </body>

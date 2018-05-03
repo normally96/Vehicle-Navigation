@@ -66,63 +66,73 @@
 	<br>
 	<br>
 	<script>
+
+		// khởi tạo socket.io 
 		var socket = io();
-      		 $("#chartemit").click(function(){      	
-      		 var timeGet= {                             // tạo hàm lấy thời gian Input
-      		 	from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
-      		 	to   : [$("#toDate").val(),$("#toHour").val(),$("#toMinute").val()]
-      		 };      
-      		 timeGet.sensor = $("#getSensor").val();    
-          	 socket.emit('chartemit',timeGet);   	// phát động tin nhắn chartemit với tham sô timeGet chứa thời gian và sensor cần lấy
-          	        
-      	});
 
-      	socket.on('updateChartJs', (msg)=>{		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
-       		var newLocations = msg;
-      		initChart("myChart", $("#getSensor").val(), msg);
-       	});
+		// khởi động khi nút nhấn được click
+		$("#chartemit").click(function() {
 
-      	function addData(chart, label, data) {     // hàm thêm Data vào Chart
-  			chart.data.labels.push(label);
-			chart.data.datasets.forEach((dataset) => {
-    		dataset.data.push(data);
-  			});
-  		  	chart.update();
-		}
-		function initChart(elementID, labels, data) {			// hàm tạo chart đầu tiên
-			var ctx = document.getElementById(elementID);
-			window.myLineChart = new Chart(ctx, {
-	  			type: 'line',
-	  		  	data: {
-		       		labels: data,
-		      		datasets: [{
-		         		label: labels,
-		          		data: data,
-		           		backgroundColor: [
-		                 	'rgba(0, 255, 0, 0.3)'
-		            	],
-		            	borderColor: [
-		                	'rgba(255,99,132,1)'
-		            	],
-		           		borderWidth: 1,
-		           		lineTension : 0.1
-		        	}]
-	   			},
-	  		  	options: {
-	  		  		
-		       		scales: {
-		  		  		yAxes: [{
-		       				ticks: {
-		          				beginAtZero:false
-		       			 	}
-		   			 	}]
-	       			}
-	    		}
-			});
+			// tạo hàm lấy thời gian Input
+		    var timeGet = { 
+		        from: [$("#fromDate").val(), $("#fromHour").val(), $("#fromMinute").val()],
+		        to: [$("#toDate").val(), $("#toHour").val(), $("#toMinute").val()]
+		    };
+		    timeGet.sensor = $("#getSensor").val();
 
+		    // phát động tin nhắn chartemit với tham sô timeGet chứa thời gian và sensor cần lấy
+		    socket.emit('chartemit', timeGet); 
+
+		});
+
+		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
+		socket.on('updateChartJs', (msg) => { 
+		    var newLocations = msg;
+		    initChart("myChart", $("#getSensor").val(), msg);
+		});
+
+		// hàm thêm Data vào Chart
+		function addData(chart, label, data) { 
+		    chart.data.labels.push(label);
+		    chart.data.datasets.forEach((dataset) => {
+		        dataset.data.push(data);
+		    });
+		    chart.update();
 		}
 
-      	
+		// hàm tạo chart đầu tiên
+		function initChart(elementID, labels, data) { 
+		    var ctx = document.getElementById(elementID);
+		    window.myLineChart = new Chart(ctx, {
+		        type: 'line',
+		        data: {
+		            labels: data,
+		            datasets: [{
+		                label: labels,
+		                data: data,
+		                backgroundColor: [
+		                    'rgba(0, 255, 0, 0.3)'
+		                ],
+		                borderColor: [
+		                    'rgba(255,99,132,1)'
+		                ],
+		                borderWidth: 1,
+		                lineTension: 0.1
+		            }]
+		        },
+		        options: {
+
+		            scales: {
+		                yAxes: [{
+		                    ticks: {
+		                        beginAtZero: false
+		                    }
+		                }]
+		            }
+		        }
+		    });
+
+		}		      	
 	</script>
 </body>
 

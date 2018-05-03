@@ -72,53 +72,67 @@
       </div>
     </div>
     
-    
-    
     <script>
-    	// var GPS={};
+      
+      // khởi tạo socket.io
       var socket = io();
-       $("#Update").click(function(){            
-          var timeGet= {
-            from : [$("#fromDate").val(),$("#fromHour").val(),$("#fromMinute").val()],
-            to   : [$("#toDate").val(),$("#toHour").val(),$("#toMinute").val()]
-          };      
+
+      // xử lý khi có sự nút nhấn được click
+      $("#Update").click(function() {
+
+          // tạo hàm thời gian để gửi
+          var timeGet = {
+              from: [$("#fromDate").val(), $("#fromHour").val(), $("#fromMinute").val()],
+              to: [$("#toDate").val(), $("#toHour").val(), $("#toMinute").val()]
+          };
           console.log(timeGet);
-          socket.emit('UpdateGGmap',timeGet);              
-       });
 
-       socket.on('updateGPS',(msg)=>{	
-       		var newLocations = msg;
-       		//console.log(GPS);
-       		initMap(newLocations);
-       });
-      // This example creates a 2-pixel-wide red polyline showing the path of
-      // the first trans-Pacific flight between Oakland, CA, and Brisbane,
-      // Australia which was made by Charles Kingsford Smith.
+          // gửi thời gian cần lấy tới server
+          socket.emit('UpdateGGmap', timeGet);
 
+      });
+
+      // xử lý khi nhận message UpdateGPS
+      socket.on('updateGPS', (msg) => {
+
+          var newLocations = msg;
+          //tạo map với địa chỉ đã nhận
+          initMap(newLocations);
+      });
+      
+      // hàm tạo map
       function initMap(locations) {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 2,
-          center: {lat: 10.851407, lng: 106.772211},
-          mapTypeId: 'terrain'
-        });
+          var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 2,
+              center: {
+                  lat: 10.851407,
+                  lng: 106.772211
+              },
+              mapTypeId: 'terrain'
+          });
 
-        var flightPlanCoordinates = [
-          {lat: 10.851407, lng: 106.772211}
-        ];
-        
-        for ( i=0; i < locations.vido.length ;i++){
-			   flightPlanCoordinates.push({lat: locations.kinhdo[i], lng: locations.vido[i]});	
-		    };
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
+          // biến lưu dữ liệu GPS
+          var flightPlanCoordinates = [{
+              lat: 10.851407,
+              lng: 106.772211
+          }];
 
-        flightPath.setMap(map);
-      }
+          for (i = 0; i < locations.vido.length; i++) {
+              flightPlanCoordinates.push({
+                  lat: locations.kinhdo[i],
+                  lng: locations.vido[i]
+              });
+          };
+          var flightPath = new google.maps.Polyline({
+              path: flightPlanCoordinates,
+              geodesic: true,
+              strokeColor: '#FF0000',
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+          });
+
+          flightPath.setMap(map);
+      }    	
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap">  // dùng API của googlemap
