@@ -46,7 +46,7 @@ app.use('/public', express.static('public'));
 
 // gửi file test.html khi có truy cập vào đường link ../
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/test.html');
+    res.sendFile(__dirname + '/main.html');
 });
 
 // gửi file googlemap.html khi có truy cập vào đường link ../googlemap
