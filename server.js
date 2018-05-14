@@ -4,6 +4,8 @@ const cors = require('cors');       // add cors module
 const SocketIO = require('socket.io'); // add socket.io module
 var net = require('net'); // add module net
 
+var checkSocketIoConnected = false;
+
 // tạo server TCP/IP
 var tcpServer = net.createServer();
 
@@ -17,7 +19,12 @@ tcpServer.on("connection", function(socket) {
         var messageObj = JSON.parse(message);
 
         // gửi Object vừa đóng gói lên trang liveUpdates
-        global.socketIO.emit('liveUpdates', messageObj);
+        if(checkSocketIoConnected){
+            global.socketIO.emit('liveUpdates', messageObj);
+        } else {
+            console.log("liveUpdates disconnected");
+        }
+        
 
         // kết nối vào collection status và insert message từ website vào database
         myDB.collection("status").insertOne(messageObj, function(err, res) {
@@ -72,6 +79,7 @@ const io = SocketIO(server);
 
 // đoạn chương trình sẽ chạy khi có một kết nối đến server
 io.on('connection', function(socket) {
+    checkSocketIoConnected = true;
     global.socketIO = socket;
     console.log('socket connection');
 
@@ -98,8 +106,8 @@ io.on('connection', function(socket) {
     socket.on('chartemit', function(msg) {
 
         // xử lý ngày tháng nhận được ra định dạng thời gian chuẩn
-        var timeFrom = new Date(2018, 3, msg.from[0], msg.from[1], msg.from[2], 0, 0).getTime();
-        var timeTo = new Date(2018, 3, msg.to[0], msg.to[1], msg.to[2], 0, 0).getTime();
+        var timeFrom = msg.from;
+        var timeTo = msg.to;
 
         // tìm data theo thời gian vừa xử lý
         myDB.collection("status").find({
@@ -113,7 +121,6 @@ io.on('connection', function(socket) {
                 }
             }]
         }).toArray(function(err, result) { //lấy tất cả dữ liệu nằm trong khoản thời gian cần tìm
-            console.log(result[msg.sensor]);
             var dataEmit = [];
 
             // lọc riêng dữ liệu của sensor đã request 

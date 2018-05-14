@@ -1,94 +1,167 @@
+
 <!doctype html>
 <html>
 
 <head>
-	<title>Line Chart</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-	<style>
-	canvas{
-		-moz-user-select: none;
-		-webkit-user-select: none;
-		-ms-user-select: none;
-	}
-	</style>
+    <title>Line Chart</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    
+      <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.css"> -->
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css"> 
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker-standalone.css"> 
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- ChartJs Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+
+    <!-- Socket.io Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+    <style type="text/css">
+        body {
+          
+        }
+        .starter-template {
+          padding: 1.5rem 1rem;
+          margin: 0px;
+          text-align: center;
+        }
+        .lead {
+          padding-top: 0.0000001rem; 
+        }
+    </style>
 </head>
 
 <body>
-	<div class = "row">							<!-- dùng bootstrap tạo định dạng cho trang wed -->
-		<div class="col-sm-5">
-			<div class = "row">
-				<div class="col-sm-1"></div>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">WebSiteName</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Page 1</a></li>
+          <li><a href="#">Page 2</a></li>
+        </ul>
+        <form class="navbar-form navbar-left" action="/action_page.php">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+      </div>
+    </nav>
 
-				<div class="col-sm-11">
-					<label for="ex1">Sensor</label>
-					<input class="form-control" id="getSensor" type="text">
-					<button id="chartemit" type="button" class="btn btn-danger">Update chart</button>
-					<div class ="row">
-						<div class="col-sm-3">
-							<h3>From time</h3>
-                  			<h3>To time</h3>
-						</div>
+    <!-- Upper Tittle -->
+    <main role="main" class="container">
+            <div class="starter-template">
+              <h1 style="margin-bottom: 0px">Status Checking</h1>
+              <p class="lead">Choose the time and the sensor you want to get</p>
+            </div>  
+    </main><!-- /.container -->
 
-						<div class="col-sm-3">
-							<label for="ex1">Date</label>
-		        			<input class="form-control" id="fromDate" type="text">
-		        			<label for="ex1">Date</label>
-		        			<input class="form-control" id="toDate" type="text">
-						</div>
-						<div class="col-sm-3">
-							<label for="ex2">Hour</label>
-        					<input class="form-control" id="fromHour" type="text">
-        					<label for="ex2">Hour</label>
-        					<input class="form-control" id="toHour" type="text">
-						</div>
-						<div class="col-sm-3">
-							<label for="ex2">Minute</label>
-        					<input class="form-control" id="fromMinute" type="text">
-        					<label for="ex2">Minute</label>
-        					<input class="form-control" id="toMinute" type="text">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-7">
-			<canvas id="myChart"  style="width:80%;height:250px;"></canvas>
-		</div>
-	</div>
-	
-	
-	<div style="width:75%;">
-		
-	</div>
-	<br>
-	<br>
+    <!-- Input Field  -->
+    <div class = "row">
+        <div class = "col-md-2"></div>
+        <div class="col-md-8 order-md-1">
+            <label for="firstName">Sensor</label>
+            <div class="dropdown">
+                <div class="form-group">
+                    <select class="form-control" id="VihSensor">
+                        <option value= "d1">Round per minutes( RPM)</option>
+                        <option value= "d2">Thermal water temperature</option>
+                        <option value= "d3">Lambda Sensor</option>
+                        <option value= "d4">Speed Sensor</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="firstName">From Date</label> 
+                        <div class="form-group">
+                            <div class='input-group date' id='fromDate'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                            
+                        <script type="text/javascript">
+                            $(function () {
+                                $('#fromDate').datetimepicker();
+                                
+                            });
+                        </script>  
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="lastName">To Date</label>
+                        <div class="form-group">
+                            <div class='input-group date' id='toDate'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                            
+                        <script type="text/javascript">
+                            $(function () {
+                                $('#toDate').datetimepicker();
+                            });
+                        </script> 
+                    </div>
+
+                    <div class= "col-md-4 mb-3">
+                        <br>
+                        <button type="button" class="btn btn-danger" id = "chartemit">Submit</button>
+                    </div>
+                    
+                </div>     
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Table -->
+    <div class="row">
+        <div class = "col-md-1"></div>
+        <!-- Chart in here -->
+        <div class = "col-md-10 order-md-1">
+            <canvas id="myChart"  style="width:80%;height:250px;"></canvas>  
+        </div>
+    </div>
+
+	<!-- javascript Code -->
 	<script>
-
 		// khởi tạo socket.io 
 		var socket = io();
 
 		// khởi động khi nút nhấn được click
 		$("#chartemit").click(function() {
-
-			// tạo hàm lấy thời gian Input
+            // tạo hàm lấy thời gian Input
+            var fromDate = $("#fromDate").data("DateTimePicker").date();
+            var toDate = $("#toDate").data("DateTimePicker").date();
+			
 		    var timeGet = { 
-		        from: [$("#fromDate").val(), $("#fromHour").val(), $("#fromMinute").val()],
-		        to: [$("#toDate").val(), $("#toHour").val(), $("#toMinute").val()]
+		        from: moment(fromDate).format("x"),
+		        to: moment(toDate).format("x")
 		    };
-		    timeGet.sensor = $("#getSensor").val();
-
+		    timeGet.sensor = $('#VihSensor :selected').val();
 		    // phát động tin nhắn chartemit với tham sô timeGet chứa thời gian và sensor cần lấy
 		    socket.emit('chartemit', timeGet); 
-
 		});
 
 		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
 		socket.on('updateChartJs', (msg) => { 
 		    var newLocations = msg;
-		    initChart("myChart", $("#getSensor").val(), msg);
+		    initChart("myChart", $('#VihSensor :selected').text(), msg);
 		});
 
 		// hàm thêm Data vào Chart
@@ -99,7 +172,6 @@
 		    });
 		    chart.update();
 		}
-
 		// hàm tạo chart đầu tiên
 		function initChart(elementID, labels, data) { 
 		    var ctx = document.getElementById(elementID);
@@ -121,7 +193,6 @@
 		            }]
 		        },
 		        options: {
-
 		            scales: {
 		                yAxes: [{
 		                    ticks: {
@@ -131,7 +202,6 @@
 		            }
 		        }
 		    });
-
 		}		      	
 	</script>
 </body>
