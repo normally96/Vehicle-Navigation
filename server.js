@@ -138,9 +138,8 @@ io.on('connection', function(socket) {
     socket.on('UpdateGGmap', function(msg) {
 
         // xử lý ngày tháng nhận được ra định dạng thời gian chuẩn
-        var timeFrom = new Date(2018, 3, msg.from[0], msg.from[1], msg.from[2], 0, 0).getTime();
-        var timeTo = new Date(2018, 3, msg.to[0], msg.to[1], msg.to[2], 0, 0).getTime();
-        console.log([timeFrom, timeTo]);
+        var timeFrom = msg.from;
+        var timeTo = msg.to;
 
         // tìm data theo thời gian vừa xử lý
         myDB.collection("status").find({
