@@ -18,6 +18,8 @@ tcpServer.on("connection", function(socket) {
         var message = msg.toString();
         var messageObj = JSON.parse(message);
 
+        var time = new Date().getTime();
+        msg.messageObj = time;
         // gửi Object vừa đóng gói lên trang liveUpdates
         if(checkSocketIoConnected){
             global.socketIO.emit('liveUpdates', messageObj);
