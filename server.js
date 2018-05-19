@@ -20,7 +20,6 @@ tcpServer.on("connection", function(socket) {
         messageObj.GPS[0]=Number(messageObj.GPS[0]);
         messageObj.GPS[1]=Number(messageObj.GPS[1]);
 
-
         var time = new Date().getTime();
         messageObj.time = time;
         // gửi Object vừa đóng gói lên trang liveUpdates
