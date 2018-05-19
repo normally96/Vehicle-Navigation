@@ -11,13 +11,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Live Updates</title>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 50%;
-        width: 80% ;
-      }
+    <style>      
       /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
@@ -28,36 +22,44 @@
     </style>
   </head>
   <body>
-    <div class="row">
-      <div class="col-sm-5">
-        <div class ="row">
-          <div class="col-sm-1"></div>
-          <div class="col-sm-10">
-            <span>ADC1  : </span> <span id = "ADC1"></span> <br>
-            <span>ADC2  : </span> <span id = "ADC2"></span> <br>
-            <span>ADC3  : </span> <span id = "ADC3"></span> <br>
-            <span>D1  : </span> <span id = "D1"></span> <br>
-            <span>D2  : </span> <span id = "D2"></span> <br>
-            <span>D3  : </span> <span id = "D3"></span> <br>
-            <span>D4  : </span> <span id = "D4"></span> <br>
-            <span>io16  : </span> <span id = "io16"></span> <br>
-            <span>io12  : </span> <span id = "io12"></span> <br>
-            <span>io13  : </span> <span id = "io13"></span> <br>
-            <span>io14  : </span> <span id = "io14"></span> <br>
-            <span>io15  : </span> <span id = "io15"></span> <br>
-
-            <canvas id="adc1Chart" style="width:90%;height:250px;"></canvas>
-            <canvas id="adc2Chart" style="width:90%;height:250px;"></canvas>
-          </div>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">WebSiteName</a>
         </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Page 1</a></li>
+          <li><a href="#">Page 2</a></li>
+        </ul>
+        <form class="navbar-form navbar-left" action="/action_page.php">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
       </div>
-      <div class="col-sm-1">.col-sm-1</div>
+    </nav>
+
+    <!-- Body -->
+    <div class= "row">
+
+      <!-- Google Map is here -->
       <div class="col-sm-6">
-        <div id="map" style="width:90%;height:250px;"></div>
-        <canvas id="adc3Chart" style="width:90%;height:250px;"></canvas>
-        <canvas id="d1Chart" style="width:90%;height:250px;"></canvas>
+        <div id="map" style="width:100%;height:450px;margin-left:20px "></div>
       </div>
-    </div>  
+
+      <!-- Charts In here -->
+      <div class="col-sm-6">
+        <canvas id="adc3Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="d1Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="adc1Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="adc2Chart" style="width:90%;height:130px;"></canvas>
+      </div>
+
+    </div>
+
     
     <script>
       
