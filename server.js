@@ -17,6 +17,9 @@ tcpServer.on("connection", function(socket) {
         // xử lý để chuyển tin nhắn vừa nhận thành chuỗi JSON
         var message = msg.toString();
         var messageObj = JSON.parse(message);
+        messageObj.GPS[0]=Number(messageObj.GPS[0]);
+        messageObj.GPS[1]=Number(messageObj.GPS[1]);
+
 
         var time = new Date().getTime();
         messageObj.time = time;
