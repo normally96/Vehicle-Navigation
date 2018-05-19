@@ -17,9 +17,11 @@ tcpServer.on("connection", function(socket) {
         // xử lý để chuyển tin nhắn vừa nhận thành chuỗi JSON
         var message = msg.toString();
         var messageObj = JSON.parse(message);
-
+        messageObj.GPS[0]=Number(messageObj.GPS[0]);
+        messageObj.GPS[1]=Number(messageObj.GPS[1]);
+        console.log(messageObj);
         var time = new Date().getTime();
-        msg.messageObj = time;
+        messageObj.time = time;
         // gửi Object vừa đóng gói lên trang liveUpdates
         if(checkSocketIoConnected){
             global.socketIO.emit('liveUpdates', messageObj);
