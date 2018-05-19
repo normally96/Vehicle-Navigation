@@ -19,7 +19,7 @@ tcpServer.on("connection", function(socket) {
         var messageObj = JSON.parse(message);
         messageObj.GPS[0]=Number(messageObj.GPS[0]);
         messageObj.GPS[1]=Number(messageObj.GPS[1]);
-        console.log(messageObj);
+
         var time = new Date().getTime();
         messageObj.time = time;
         // gửi Object vừa đóng gói lên trang liveUpdates

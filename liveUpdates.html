@@ -4,10 +4,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
      <!-- jQuery library -->
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <!-- Socket.io Library -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Live Updates</title>
@@ -60,6 +60,7 @@
     </div>  
     
     <script>
+      
       var placePlan = [];
       var socket = io();
       initChart("adc1Chart", "ADC1 Chart", ""); // hàm tạo chart ban đầu
@@ -69,7 +70,7 @@
 
       // hàm xử lý khi nhận message liveUpdates từ Server
       socket.on('liveUpdates', (msg) => {
-          console.log(msg.sensor);
+          //console.log(msg.sensor);
 
           // lấy các giá trị cảm biến từ message vừa nhận 
           $("#ADC1").text(msg.sensor);
@@ -100,42 +101,37 @@
           addData(window.adc3Chart, timeNow, Number(msg.a3));
           addData(window.d1Chart, timeNow, Number(msg.d1));
 
-          // khởi tạo google map với địa chỉ vừa nhận được
-          initMap(newLocations);
-
-          console.log(msg);
+  
+          var path = window.poly.getPath();
+          path.push(new google.maps.LatLng(newLocations[0], newLocations[1]));
+          window.poly.setPath(path);
       });
 
       // hàm khởi tạo map
-      function initMap(locations) { 
-          var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 2,
-              center: {
-                  lat: 10.851407,
-                  lng: 106.772211
-              },
-              mapTypeId: 'terrain'
-          });
+      function initMap() { 
+        var map = new google.maps.Map(
+        document.getElementById("map"), {
+          center: new google.maps.LatLng(10.814640, 106.714863),
+          zoom: 9,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        window.poly = new google.maps.Polyline({
+        map: map,
+        path: []
+      });
+      
+      google.maps.event.addListener(map, 'click', function(evt) {
+        // get existing path
+        var path = window.poly.getPath();
+        console.log(evt.latLng.lat());
+        // add new point (use the position from the click event)
+        path.push(new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng()));
+        // update the polyline with the updated path
+        window.poly.setPath(path);
+      })
+    };
 
-          var flightPlanCoordinates = [];
-
-          placePlan.push({
-              lat: locations[0],
-              lng: locations[1]
-          });
-
-          flightPlanCoordinates = placePlan;
-
-          var flightPath = new google.maps.Polyline({
-              path: flightPlanCoordinates,
-              geodesic: true,
-              strokeColor: '#FF0000',
-              strokeOpacity: 1.0,
-              strokeWeight: 2
-          });
-
-          flightPath.setMap(map);
-      }
+    //google.maps.event.addDomListener(window, "load", initMap);
       
       // hàm khởi tạo chart
       function initChart(elementID, labels, data) {
@@ -180,6 +176,7 @@
           chart.update();
       }
     </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap"></script>
    
   </body>
 </html>
