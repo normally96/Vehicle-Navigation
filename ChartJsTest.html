@@ -162,7 +162,8 @@
 		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
 		socket.on('updateChartJs', (msg) => { 
 		    var newLocations = msg;
-		    initChart("myChart", $('#VihSensor :selected').text(), msg);
+		    initChart("myChart", $('#VihSensor :selected').text(), msg.data1,msg.time);
+            console.log(msg);
 		});
 
 		// hàm thêm Data vào Chart
@@ -174,14 +175,14 @@
 		    chart.update();
 		}
 		// hàm tạo chart đầu tiên
-		function initChart(elementID, labels, data) { 
+		function initChart(elementID, label, data, labels) { 
 		    var ctx = document.getElementById(elementID);
 		    window.myLineChart = new Chart(ctx, {
 		        type: 'line',
 		        data: {
-		            labels: data,
+		            labels: labels,
 		            datasets: [{
-		                label: labels,
+		                label: label,
 		                data: data,
 		                backgroundColor: [
 		                    'rgba(0, 255, 0, 0.3)'

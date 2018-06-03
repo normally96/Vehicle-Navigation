@@ -125,11 +125,25 @@ io.on('connection', function(socket) {
                 }
             }]
         }).toArray(function(err, result) { //lấy tất cả dữ liệu nằm trong khoản thời gian cần tìm
-            var dataEmit = [];
+            var dataEmit = {dataChart: [],
+                            time : []
+            };
+            var lengthDiv = Math.floor(result.length/30)+1;
+            var lengthCount = 0;
 
             // lọc riêng dữ liệu của sensor đã request 
             for (i = 0; i < result.length; i++) {
-                dataEmit.push(result[i][msg.sensor]);
+                if ( (i%lengthDiv) == 0 ){
+                    dataEmit.dataChart.push(result[i][msg.sensor]);
+
+                    // thêm tạo thời gian hiện tại 
+                    var minuteNow = new Date(result[i]["time"]).getMinutes();
+                    var hourNow = new Date(result[i]["time"]).getHours();
+                    var timeNow = hourNow + ':' + minuteNow;
+                    lengthCount++;
+
+                    dataEmit.time.push(timeNow);
+                }
             }
 
             // emit gói updatechartJs với dữ liệu đã lọc
