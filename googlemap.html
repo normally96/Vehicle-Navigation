@@ -168,12 +168,14 @@
         var newLocations = msg;
         //tạo map với địa chỉ đã nhận
         initMap(newLocations);
+        window.map.setCenter(new google.maps.LatLng(newLocations.kinhdo[0], newLocations.vido[0]));
+        window.map.setZoom(13);
     });
     
     // hàm tạo map
     function initMap(locations) {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 2,
+        window.map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 3,
             center: {
                 lat: 10.851407,
                 lng: 106.772211

@@ -162,7 +162,7 @@
 		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
 		socket.on('updateChartJs', (msg) => { 
 		    var newLocations = msg;
-		    initChart("myChart", $('#VihSensor :selected').text(), msg.data1,msg.time);
+		    initChart("myChart", $('#VihSensor :selected').text(), msg.dataChart,msg.time);
             console.log(msg);
 		});
 
