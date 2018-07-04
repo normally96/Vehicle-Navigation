@@ -142,7 +142,7 @@
 
         var markerCoordinates = [];
 
-        var marker, i;
+        var marker, i, imageMarker;
 
         for (i = 0; i < locations.rpm.length; i++) {  
 
@@ -151,9 +151,19 @@
                 lng: locations.vido[i]
             });
             var str = "rpm: " + locations.rpm[i];
+            var imageMarker = {
+                url: 'https://mt.google.com/vt/icon/name=icons/spotlight/library_search_v_S_8x.png&scale=1',
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(16, 16),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(8,16)
+            };
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(locations.kinhdo[i], locations.vido[i]),
                 map: map,   
+                icon: imageMarker,
                 title: str
             });
         }  
