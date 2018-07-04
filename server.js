@@ -3,6 +3,7 @@ const http = require('http');       // add http module
 const cors = require('cors');       // add cors module
 const SocketIO = require('socket.io'); // add socket.io module
 var net = require('net'); // add module net
+var moment = require('moment-timezone'); // add moment timezone module
 
 var checkSocketIoConnected = false;
 
@@ -75,6 +76,11 @@ app.get('/liveUpdates', (req, res) => {
     res.sendFile(__dirname + '/liveUpdates.html');
 });
 
+// gửi file dayTracking.html khi có truy cập vào đường link ../liveUpdates
+app.get('/dayTracking', (req, res) => {
+    res.sendFile(__dirname + '/dayTracking.html');
+});
+
 // create a server for Socket.io
 const server = http.Server(app);
 
@@ -130,6 +136,7 @@ io.on('connection', function(socket) {
             };
             var lengthDiv = Math.floor(result.length/30)+1;
             var lengthCount = 0;
+            var timeEmit = [];
 
             // lọc riêng dữ liệu của sensor đã request 
             for (i = 0; i < result.length; i++) {
@@ -137,9 +144,9 @@ io.on('connection', function(socket) {
                     dataEmit.dataChart.push(result[i][msg.sensor]);
 
                     // thêm tạo thời gian hiện tại 
-                    var minuteNow = new Date(result[i]["time"]).getMinutes();
-                    var hourNow = new Date(result[i]["time"]).getHours();
-                    var timeNow = hourNow + ':' + minuteNow;
+                    var a = moment.tz(result[i]["time"], "Asia/Ho_Chi_Minh").format();
+                    var timeNow = a.slice(11,16);
+                    timeEmit.push(timeNow);
                     lengthCount++;
 
                     dataEmit.time.push(timeNow);
@@ -152,7 +159,55 @@ io.on('connection', function(socket) {
         });
     });
 
-    // xử lý khi nhận request từ trang googlemap
+    // xử lý khi nhận request từ trang dayTracking
+    socket.on('socketDayTracking', function(msg) {
+
+        // xử lý ngày tháng nhận được ra định dạng thời gian chuẩn
+        var timeFrom = msg;
+        var timeTo = Number(msg) + 86400000;
+
+        // tìm data theo thời gian vừa xử lý
+        myDB.collection("status").find({
+            $and: [{
+                time: {
+                    $gte: Number(timeFrom)
+                }
+            }, {
+                time: {
+                    $lte: Number(timeTo)
+                }
+            }]
+        }).toArray(function(err, result) { //lấy tất cả file trong collection customers
+            if (!err) {
+                var kinh = [];
+                var vi = [];
+                var adc = [];
+                var timeEmit=[];
+                for (i = 0; i < result.length; i++) {
+
+                    kinh.push(result[i].GPS[0]);
+                    vi.push(result[i].GPS[1]);
+                    adc.push(result[i].a1);
+
+                    // thêm tạo thời gian hiện tại 
+                    var a = moment.tz(result[i]["time"], "Asia/Ho_Chi_Minh").format();
+                    var timeNow = a.slice(11,16);
+                    timeEmit.push(timeNow);
+                }
+
+                
+
+                socket.emit('updateSocketDayTracking', {
+                    "kinhdo": kinh,
+                    "vido": vi,
+                    "rpm": adc,
+                    "time": timeEmit
+                })
+            }
+        });
+
+    });
+
     socket.on('UpdateGGmap', function(msg) {
 
         // xử lý ngày tháng nhận được ra định dạng thời gian chuẩn
@@ -188,6 +243,7 @@ io.on('connection', function(socket) {
         });
 
     });
+
 });
 
 // một khi đã kết nói với database mới khởi động server

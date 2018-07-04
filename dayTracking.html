@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <!-- ChartJs Library -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+
+  <!-- Bootstrap & Jquery Library -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- Socket.io Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+  <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.css"> -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css"> 
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker-standalone.css"> 
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+  
+  <title>Position Tracking</title>
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 100%;
+      width: 100% ;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+
+      margin: 0;
+      padding: 0;
+    }
+        .starter-template {
+          margin: 0px;
+          text-align: center;
+        }
+        .lead {
+          padding-top: 0.0000001rem; 
+        }
+  </style>
+</head>
+
+<body>
+
+
+    <div class = "row">
+        <div class= "col-md-4">
+            <h1 style="margin-left: 10px">Kiểm tra vị trí theo ngày</h1>      
+        </div>
+
+    <!-- Input Day -->
+    <div class="col-md-4">
+        <div class="form-group" style="margin-top: 20px ">
+            <div class='input-group date' id='fromDate'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+            
+        <script type="text/javascript">
+            $(function () {
+                $('#fromDate').datetimepicker({
+                    viewMode: 'days',
+                    format: 'DD/MM/YYYY'
+                });
+            });
+        </script>  
+    </div>
+    <!-- Submit Button -->
+    <div class= "col-md-4 mb-3">
+        <br>
+        <button type="button" class="btn btn-danger" id = "Update">Submit</button>
+    </div>
+  </div>
+
+  <!-- Google map API -->
+  <div class="row" style ="height:60%">
+    <div class = "col-md-1"></div>
+
+    <!-- Googlemap in here -->
+    <div class="col-sm-12" style ="height:100%">
+        <div id="map" style="width:100%;height:100%;"></div>
+    </div>
+  </div>
+
+  <!-- RPM chart -->
+  <canvas id="myChart"  style="width:80%;height:250px;"></canvas>
+  
+  
+  <script>
+    
+    // khởi tạo socket.io
+    var socket = io();
+
+    // xử lý khi có sự nút nhấn được click
+    $("#Update").click(function() {
+
+        // tạo hàm thời gian để gửi
+        var fromDate = $("#fromDate").data("DateTimePicker").date();
+
+        var timeGet = moment(fromDate).startOf('day').format("x");
+        console.log(timeGet);
+    
+        // gửi thời gian cần lấy tới server
+        socket.emit('socketDayTracking', timeGet);
+        
+    });
+
+    // xử lý khi nhận message UpdateGPS
+    socket.on('updateSocketDayTracking', (msg) => {
+
+        initChart("myChart", "Tốc độ động cơ", msg.rpm,msg.time);
+
+        var newLocations = msg;
+        //tạo map với địa chỉ đã nhận
+        initMap(newLocations);
+        window.map.setCenter(new google.maps.LatLng(newLocations.kinhdo[0], newLocations.vido[0]));
+        window.map.setZoom(13);
+    });
+    
+    // hàm tạo map
+    function initMap(locations) {
+        window.map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 3,
+            center: {
+                lat: 10.851407,
+                lng: 106.772211
+            },
+            mapTypeId: 'terrain'
+        });
+
+        // biến lưu dữ liệu GPS
+        var flightPlanCoordinates = [];
+
+        var markerCoordinates = [];
+
+        var marker, i;
+
+        for (i = 0; i < locations.rpm.length; i++) {  
+
+            flightPlanCoordinates.push({
+                lat: locations.kinhdo[i],
+                lng: locations.vido[i]
+            });
+            var str = "rpm: " + locations.rpm[i];
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations.kinhdo[i], locations.vido[i]),
+                map: map,   
+                title: str
+            });
+        }  
+
+        var flightPath = new google.maps.Polyline({
+            path: flightPlanCoordinates,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+
+        flightPath.setMap(map);google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infowindow.setContent("Hello world");
+                infowindow.open(map, marker);
+            }
+        })(marker, i)); 
+    }
+    
+    function addData(chart, label, data) { 
+        chart.data.labels.push(label);
+
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        chart.update();
+    }
+    // hàm tạo chart đầu tiên
+    function initChart(elementID, label, data, labels) { 
+        var ctx = document.getElementById(elementID);
+        window.myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: [
+                        'rgba(0, 255, 0, 0.3)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)'
+                    ],
+                    borderWidth: 1,
+                    lineTension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                }
+            }
+        });
+    }
+  </script>
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFuuPUPEbAA_HpinCc_iPkgXkkC_SCTQc&callback=initMap">  // dùng API của googlemap
+  </script>
+</body>
+
+</html>

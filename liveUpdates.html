@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- ChartJs Library -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+
      <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
       <!-- Socket.io Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     
@@ -35,26 +38,26 @@
       <div class="col-sm-3">
         <div class= "row">
           <div class="container" style="width:100%;height:450px;margin-left:20px">     
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="margin-top: 20px">
               <thead>
                 <tr>
-                  <th>Round per minute</th>
+                  <th>Vị trí bướm ga</th>
                   <td id = "ADC1"></td>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th>Water temperater</th>
-                  <td id = "D2"></td>
+                  <th>Nhiệt độ không khí nạp</th>
+                  <td id = "ADC2"></td>
                   
                 </tr>
                 <tr>
-                  <th>A3</th>
-                  <td id = "ADC2"></td> 
+                  <th>Nhiệt độ nước làm mát</th>
+                  <td id = "ADC3"></td> 
                 </tr>
                 <tr>
-                  <th>A4</th>
-                  <td id = "ADC3"></td>
+                  <th>Tốc độ động cơ</th>
+                  <td id = "D1"></td>
                 </tr>
               </tbody>
             </table>
@@ -70,20 +73,20 @@
 
      <!-- Charts In here -->
     <div>
-        <canvas id="adc3Chart" style="width:90%;height:130px;"></canvas>
-        <canvas id="d1Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="adc1Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="adc2Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="adc3Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="d1Chart" style="width:90%;height:130px;"></canvas>
     </div>
   
     <script>
       
       var placePlan = [];
       var socket = io();
-      initChart("adc1Chart", "ADC1 Chart", ""); // hàm tạo chart ban đầu
-      initChart("adc2Chart", "ADC2 Chart", "");
-      initChart("adc3Chart", "ADC3 Chart", "");
-      initChart("d1Chart", "D1 Chart", "");
+      initChart("adc1Chart", "Vị trí buớm ga", ""); // hàm tạo chart ban đầu
+      initChart("adc2Chart", "Nhiệt độ không khí nạp", "");
+      initChart("adc3Chart", "Nhiệt độ nước làm mát", "");
+      initChart("d1Chart", "Tốc độ động cơ", "");
 
       // hàm xử lý khi nhận message liveUpdates từ Server
       socket.on('liveUpdates', (msg) => {
@@ -94,16 +97,7 @@
           $("#ADC2").text(msg.a2);
           $("#ADC3").text(msg.a3);
           $("#D1").text(msg.d1);
-          $("#D2").text(msg.d2);
-          $("#D3").text(msg.d3);
-          $("#D4").text(msg.d4);
-          $("#D5").text(msg.d5);
-          $("#io16").text(msg.io16);
-          $("#io12").text(msg.io12);
-          $("#io13").text(msg.io13);
-          $("#io14").text(msg.io14);
-          $("#io15").text(msg.io15);
-
+          
           // lấy giá trị GPS
           var newLocations = msg.GPS;
 

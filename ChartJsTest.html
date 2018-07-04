@@ -25,9 +25,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 
     <style type="text/css">
-        body {
-          
-        }
         .starter-template {
           padding: 1.5rem 1rem;
           margin: 0px;
@@ -40,27 +37,10 @@
 </head>
 
 <body>
-    <!-- Navigation bar -->
-    <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">VeNavi</a>
-        </div>
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-        </ul>
-        <form class="navbar-form navbar-left" action="/action_page.php">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search">
-          </div>
-          <button type="submit" class="btn btn-default">Submit</button>
-        </form>
-      </div>
-    </nav>
-
+    
     <!-- Upper Tittle -->
-    <main role="main" class="container">
-            <div class="starter-template">
+    <main role="main" class="container" style="padding: 0px">
+            <div class="starter-template" style="padding: 0px">
               <h1 style="margin-bottom: 0px">Kiểm tra trạng thái</h1>
               <p class="lead">Chọn thời gian và trạng thái mong muốn</p>
             </div>  
@@ -151,7 +131,7 @@
 		    var timeGet = { 
 		        from: moment(fromDate).format("x"),
 		        to: moment(toDate).format("x")
-		    };
+            };
 		    timeGet.sensor = $('#VihSensor :selected').val();
 		    // phát động tin nhắn chartemit với tham sô timeGet chứa thời gian và sensor cần lấy
 		    socket.emit('chartemit', timeGet); 
