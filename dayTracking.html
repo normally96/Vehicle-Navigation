@@ -150,7 +150,7 @@
                 lat: locations.kinhdo[i],
                 lng: locations.vido[i]
             });
-            var str = "rpm: " + locations.rpm[i];
+            var tittleMarker = ""+ locations.time[i] + "\nrpm: " + locations.rpm[i];
             var imageMarker = {
                 url: 'https://mt.google.com/vt/icon/name=icons/spotlight/library_search_v_S_8x.png&scale=1',
                 // This marker is 20 pixels wide by 32 pixels high.
@@ -164,8 +164,13 @@
                 position: new google.maps.LatLng(locations.kinhdo[i], locations.vido[i]),
                 map: map,   
                 icon: imageMarker,
-                title: str
+                title: tittleMarker
             });
+
+            // add Listener event to each marker
+            // marker.addListener('click', function() {
+            //     console.log(marker.get('map'));
+            // });
         }  
 
         var flightPath = new google.maps.Polyline({
@@ -176,12 +181,7 @@
             strokeWeight: 2
         });
 
-        flightPath.setMap(map);google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-                infowindow.setContent("Hello world");
-                infowindow.open(map, marker);
-            }
-        })(marker, i)); 
+        flightPath.setMap(window.map); 
     }
     
     function addData(chart, label, data) { 

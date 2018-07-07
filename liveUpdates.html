@@ -57,8 +57,29 @@
                 </tr>
                 <tr>
                   <th>Tốc độ động cơ</th>
+                  <td id = "IO12"></td>
+                </tr>
+                <tr>
+                  <th>Điện áp ắc quy</th>
+                  <td id = "IO13"></td>
+                </tr>
+                <tr>
+                  <th>Lưu lượng khí nạp</th>
+                  <td id = "IO14"></td>
+                </tr>
+                <tr>
+                  <th>Góc đánh lửa sớm<menu type="context"></menu></th>
+                  <td id = "IO15"></td>
+                </tr>
+                <tr>
+                  <th>Thời gian phun nhiên liệu<menu type="context"></menu></th>
+                  <td id = "IO16"></td>
+                </tr>
+                <tr>
+                  <th>Nhiệt độ dầu động cơ<menu type="context"></menu></th>
                   <td id = "D1"></td>
                 </tr>
+
               </tbody>
             </table>
           </div>
@@ -76,6 +97,11 @@
         <canvas id="adc1Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="adc2Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="adc3Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="io12Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="io13Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="io14Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="io15Chart" style="width:90%;height:130px;"></canvas>
+        <canvas id="io16Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="d1Chart" style="width:90%;height:130px;"></canvas>
     </div>
   
@@ -86,7 +112,12 @@
       initChart("adc1Chart", "Vị trí buớm ga", ""); // hàm tạo chart ban đầu
       initChart("adc2Chart", "Nhiệt độ không khí nạp", "");
       initChart("adc3Chart", "Nhiệt độ nước làm mát", "");
-      initChart("d1Chart", "Tốc độ động cơ", "");
+      initChart("io12Chart", "Tốc độ động cơ", "");
+      initChart("io13Chart", "Điện áp ắc quy", "");
+      initChart("io14Chart", "Lưu lượng khí nạp", "");
+      initChart("io15Chart", "Góc đánh lửa sớm", "");
+      initChart("io16Chart", "Thời gian phun nhiên liệu", "");
+      initChart("d1Chart", "Nhiệt độ dầu động cơ", "");
 
       // hàm xử lý khi nhận message liveUpdates từ Server
       socket.on('liveUpdates', (msg) => {
@@ -96,8 +127,12 @@
           $("#ADC1").text(msg.a1);
           $("#ADC2").text(msg.a2);
           $("#ADC3").text(msg.a3);
+          $("#IO12").text(msg.io12);
+          $("#IO13").text(msg.io13);
+          $("#IO14").text(msg.io14);
+          $("#IO15").text(msg.io15);
+          $("#IO16").text(msg.io16);
           $("#D1").text(msg.d1);
-          
           // lấy giá trị GPS
           var newLocations = msg.GPS;
 
@@ -110,6 +145,11 @@
           addData(window.adc1Chart, timeNow, Number(msg.a1)); 
           addData(window.adc2Chart, timeNow, Number(msg.a2));
           addData(window.adc3Chart, timeNow, Number(msg.a3));
+          addData(window.io12Chart, timeNow, Number(msg.io12));
+          addData(window.io13Chart, timeNow, Number(msg.io13));
+          addData(window.io14Chart, timeNow, Number(msg.io14));
+          addData(window.io15Chart, timeNow, Number(msg.io15));
+          addData(window.io16Chart, timeNow, Number(msg.io16));
           addData(window.d1Chart, timeNow, Number(msg.d1));
 
           // create a new point on Google Map
