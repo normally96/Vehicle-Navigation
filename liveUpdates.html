@@ -79,6 +79,15 @@
                   <th>Nhiệt độ dầu động cơ<menu type="context"></menu></th>
                   <td id = "D1"></td>
                 </tr>
+                <tr>
+                  <th>Số lỗi động cơ<menu type="context"></menu></th>
+                  <td id = "dtc_numb"></td>
+                </tr>
+
+                <tr>
+                  <th>DTCs<menu type="context"></menu></th>
+                  <td id = "DTCs"></td>
+                </tr>
 
               </tbody>
             </table>
@@ -133,6 +142,9 @@
           $("#IO15").text(msg.io15);
           $("#IO16").text(msg.io16);
           $("#D1").text(msg.d1);
+          $("#dtc_numb").text(msg.d2);
+          var text = "" + msg.dtc[0] + " , " + msg.dtc[1] + " , " + msg.dtc[2] + " , ";
+          $("#DTCs").text(text);
           // lấy giá trị GPS
           var newLocations = msg.GPS;
 
