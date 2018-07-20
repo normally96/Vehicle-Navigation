@@ -1,82 +1,75 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- W3Schools Template -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <style type="text/css">
-      body {
-        padding-top: 2rem;
-      }
-      .starter-template {
-        padding: 1.5rem 1rem;
-        margin: 0px;
-        text-align: center;
-      }
-      .lead {
-        padding-top: 0.0000001rem; 
-      }
-    </style>
     <title>Vehicle Navigation</title>
   </head>
-  <body>
-    <!-- Navigation bar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">VehNavi</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </nav>
+  <body id="myPage">
+    
+    <!-- Navbar -->
+    <div class="w3-bar w3-theme-d2 w3-left-align">
+      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-hover-white w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
+      <a href="#" class="w3-bar-item w3-button w3-teal"><i class="fa fa-home w3-margin-right"></i>VeNavi</a>
+      <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-teal" title="Search"><i class="fa fa-search"></i></a>
+    </div>
+    
+    <!-- Image Header -->
+    <div class="w3-display-container w3-animate-opacity" >
+      <img src="/public/mainHeader.png" alt="boat" style="width:100%;min-height:250px;max-height:600px;">
+      <div class="w3-container w3-display-topmiddle w3-margin-bottom">  
+        <div class="w3-center">
+            <h1 style="color: aliceblue; font-size:400%";>Vehicle Navigation</h1>
+            <h3 style="color: aliceblue">Theo dõi hành trình</h3>
+        </div>    
+      </div>  
+    </div>
+    
+    <div class="w3-row-padding w3-center w3-margin-top" >
 
-    <main role="main" class="container">
-
-      <div class="starter-template">
-        <h1 style="margin-bottom: 0px">Vehicle Navigation</h1>
-        <p class="lead">Theo dõi hành trình</p>
+      <!-- Live Update place -->
+      <div class="w3-third"  id ="liveUpdate">
+        <div class="w3-card w3-container" style="min-height:460px">
+        <h1>Live update</h1>
+        <p>Hiển thị trạng thái hiện tại của xe</p>
+        <img src="/public/liveupdate.png" style="width:100%;min-height:250px;max-height:600px;">
+        
+        </div>
       </div>
-
-    </main><!-- /.container -->
-
-    <!--  Pricing Tag =)) -->
-    <div class="container">
-      <div class="card-deck mb-0 text-center">
-        <div class="card mb-1 box-shadow" style="height: 100px">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Live update</h4>
-          </div>
-          <div class="card-body">
-            <p style="padding-bottom: 3rem">Hiển thị trạng thái hiện tại của xe</p>           
-            <button type="button" class="btn btn-lg btn-block btn-primary" id="liveUpdate">Get in</button>
-          </div>
+      
+      <!-- Chart place -->
+      <div class="w3-third" id="chart">
+        <div class="w3-card w3-container" style="min-height:460px">
+        <h1>Chart</h1>
+        <p>Hiển trị trạng thái của xe theo đồ thị</p>
+        <img src="/public/chart.png" style="width:70%;min-height:250px;max-height:600px;">    
         </div>
-        <div class="card mb-1 box-shadow" style="height:100px">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Chart</h4>
-          </div>
-          <div class="card-body">
-            <p style="padding-bottom: 3rem">Hiển trị trạng thái theo đồ thị</p>           
-            <button type="button" class="btn btn-lg btn-block btn-primary" id="chart">Get in</button>
-          </div>
-        </div>
-        <div class="card mb-1 box-shadow" style="height: 100px">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Map</h4>
-          </div>
-          <div class="card-body">
-            <p>Vị trí của xe theo thời gian</p>           
-            <button type="button" class="btn btn-lg btn-block btn-primary" id = "googlemap">Theo thời gian</button>
-            <button type="button" class="btn btn-lg btn-block btn-primary" id = "googlemapDay">Theo ngày</button>
+      </div>
+      
+      <!-- Map place -->
+      <div class="w3-third">
+        <div class="w3-card w3-container" style="min-height:460px">
+          <h1>Map</h1>
+          <p>Vị trí của xe theo thời gian</p>
+          <img src="/public/map.png" style="width:60%;min-height:250px;max-height:600px;">   
+          <!-- Button -->
+          <div>
+              <button class="w3-btn w3-round-large w3-green" id="googlemapDay">Theo Ngày</button>
+              <button class="w3-btn w3-round-large w3-blue"id="googlemap">Theo thời gian</button>
           </div>
         </div>
       </div>
     </div>  
+
+    
     <!-- Script -->
     <script>
       $("#liveUpdate").click(function(){
@@ -92,10 +85,6 @@
         window.open("dayTracking");
       });    
     </script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    
   </body>
 </html>

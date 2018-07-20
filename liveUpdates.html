@@ -35,10 +35,9 @@
     <!-- Body -->
     <div class= "row" style="height: 100%;">
       <!-- Table here -->
-      <div class="col-sm-3">
-        <div class= "row">
-          <div class="container" style="width:100%;height:450px;margin-left:20px">     
-            <table class="table table-bordered" style="margin-top: 20px">
+      <div class="col-sm-3" style="padding-left:10px;padding-right: 0px; height: 100%;background-color:silver;">
+         
+            <table class="table table-bordered" style="margin-top: 0px;margin-right: 0px ;">
               <thead>
                 <tr>
                   <th>Vị trí bướm ga</th>
@@ -85,33 +84,45 @@
                 </tr>
 
                 <tr>
-                  <th>DTCs<menu type="context"></menu></th>
+                  <th>Mã lỗi<menu type="context"></menu></th>
                   <td id = "DTCs"></td>
                 </tr>
 
               </tbody>
             </table>
-          </div>
-        </div>
+       
       </div>
 
       <!-- Google Map is here -->
-      <div class="col-sm-9" style="height: 100%;">
+      <div class="col-sm-9" style="height: 100%;padding: 0px;">
         <div id="map"></div>
       </div>
     </div>
 
      <!-- Charts In here -->
-    <div>
+    <div class="row">
+      <div class = "col-sm-4">
         <canvas id="adc1Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="adc2Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="adc3Chart" style="width:90%;height:130px;"></canvas>
+      </div>
+        
+      <div class = "col-sm-4">
         <canvas id="io12Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="io13Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="io14Chart" style="width:90%;height:130px;"></canvas>
+      </div>
+        
+      <div class = "col-sm-4">
         <canvas id="io15Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="io16Chart" style="width:90%;height:130px;"></canvas>
         <canvas id="d1Chart" style="width:90%;height:130px;"></canvas>
+      </div>
+    </div> 
+    <div>
+        
+        
+        
     </div>
   
     <script>
@@ -143,7 +154,10 @@
           $("#IO16").text(msg.io16);
           $("#D1").text(msg.d1);
           $("#dtc_numb").text(msg.d2);
-          var text = "" + msg.dtc[0] + " , " + msg.dtc[1] + " , " + msg.dtc[2] + " , ";
+          var text = "";
+          for (var i=0; i < msg.d2 ; i++){
+            text = text + msg.dtc[i] + ", ";
+          }
           $("#DTCs").text(text);
           // lấy giá trị GPS
           var newLocations = msg.GPS;
