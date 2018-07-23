@@ -54,15 +54,15 @@
             <div class="dropdown">
                 <div class="form-group">
                     <select class="form-control" id="VihSensor">
-                        <option value= "Độ">Vị trí bướm ga</option>
-                        <option value= "°C">Nhiệt độ không khí nạp</option>
-                        <option value= "°C">Nhiệt độ nước làm mát</option>
-                        <option value= "Vòng trên phút">Tốc độ động cơ</option>
-                        <option value= "V">Điện áp ắc quy</option>
-                        <option value= "grams/sec">Lưu lượng khí nạp</option>
-                        <option value= "Độ">Góc đánh lửa sớm</option>
-                        <option value= "Độ">Thời gian phun nhiên liệu</option>
-                        <option value= "°C">Nhiệt độ dầu động cơ</option>
+                        <option value= ["a1","Độ"]>Vị trí bướm ga</option>
+                        <option value= ["a2","°C"]>Nhiệt độ không khí nạp</option>
+                        <option value= ["a3","°C"]>Nhiệt độ nước làm mát</option>
+                        <option value= ["io12","Vòng/phút"]>Tốc độ động cơ</option>
+                        <option value= ["io13","V"]>Điện áp ắc quy</option>
+                        <option value= ["io14","gram/sec"]>Lưu lượng khí nạp</option>
+                        <option value= ["io15","Độ"]>Góc đánh lửa sớm</option>
+                        <option value= ["io16","Độ"]>Thời gian phun nhiên liệu</option>
+                        <option value= ["d1","°C"]>Nhiệt độ dầu động cơ</option>
                     </select>
                 </div>
                 <div class="row">
@@ -137,15 +137,16 @@
 		        from: moment(fromDate).format("x"),
 		        to: moment(toDate).format("x")
             };
-		    timeGet.sensor = $('#VihSensor :selected').val();
+		    timeGet.sensor = JSON.parse($('#VihSensor :selected').val())[0];
 		    // phát động tin nhắn chartemit với tham sô timeGet chứa thời gian và sensor cần lấy
+            JSON.parse($('#VihSensor :selected').val());
 		    socket.emit('chartemit', timeGet); 
 		});
 
 		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
 		socket.on('updateChartJs', (msg) => { 
 		    var newLocations = msg;
-		    initChart("myChart", $('#VihSensor :selected').text(), msg.dataChart,msg.time,$('#VihSensor :selected').val());
+		    initChart("myChart", $('#VihSensor :selected').text(), msg.dataChart,msg.time,JSON.parse($('#VihSensor :selected').val())[1]);
             console.log(msg);
 		});
 
@@ -184,17 +185,6 @@
                             scaleLabel: {
                                 display: true,
                                 labelString: yLabel
-                            },
-		                    ticks: {
-		                        beginAtZero: false
-                                
-		                    }
-		                }],
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: "Thời gian(giờ : phút)"
                             },
 		                    ticks: {
 		                        beginAtZero: false
