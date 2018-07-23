@@ -54,15 +54,15 @@
             <div class="dropdown">
                 <div class="form-group">
                     <select class="form-control" id="VihSensor">
-                        <option value= "a1">Vị trí bướm ga</option>
-                        <option value= "a2">Nhiệt độ không khí nạp</option>
-                        <option value= "a3">Nhiệt độ nước làm mát</option>
-                        <option value= "io12">Tốc độ động cơ</option>
-                        <option value= "io13">Điện áp ắc quy</option>
-                        <option value= "io14">Lưu lượng khí nạp</option>
-                        <option value= "io15">Góc đánh lửa sớm</option>
-                        <option value= "io16">Thời gian phun nhiên liệu</option>
-                        <option value= "d1">Nhiệt độ dầu động cơ</option>
+                        <option value= "Độ">Vị trí bướm ga</option>
+                        <option value= "°C">Nhiệt độ không khí nạp</option>
+                        <option value= "°C">Nhiệt độ nước làm mát</option>
+                        <option value= "Vòng trên phút">Tốc độ động cơ</option>
+                        <option value= "V">Điện áp ắc quy</option>
+                        <option value= "grams/sec">Lưu lượng khí nạp</option>
+                        <option value= "Độ">Góc đánh lửa sớm</option>
+                        <option value= "Độ">Thời gian phun nhiên liệu</option>
+                        <option value= "°C">Nhiệt độ dầu động cơ</option>
                     </select>
                 </div>
                 <div class="row">
@@ -145,7 +145,7 @@
 		// khi có sự kiện updateChartJs thì tạo chart với tham dữ liệu msg
 		socket.on('updateChartJs', (msg) => { 
 		    var newLocations = msg;
-		    initChart("myChart", $('#VihSensor :selected').text(), msg.dataChart,msg.time);
+		    initChart("myChart", $('#VihSensor :selected').text(), msg.dataChart,msg.time,$('#VihSensor :selected').val());
             console.log(msg);
 		});
 
@@ -158,7 +158,7 @@
 		    chart.update();
 		}
 		// hàm tạo chart đầu tiên
-		function initChart(elementID, label, data, labels) { 
+		function initChart(elementID, label, data, labels,yLabel) { 
 		    var ctx = document.getElementById(elementID);
 		    window.myLineChart = new Chart(ctx, {
 		        type: 'line',
@@ -180,8 +180,25 @@
 		        options: {
 		            scales: {
 		                yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: yLabel
+                            },
 		                    ticks: {
 		                        beginAtZero: false
+                                
+		                    }
+		                }],
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: "Thời gian(giờ : phút)"
+                            },
+		                    ticks: {
+		                        beginAtZero: false
+                                
 		                    }
 		                }]
 		            }
