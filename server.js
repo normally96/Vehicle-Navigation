@@ -187,7 +187,7 @@ io.on('connection', function(socket) {
 
                     kinh.push(result[i].GPS[0]);
                     vi.push(result[i].GPS[1]);
-                    adc.push(result[i].a1);
+                    adc.push(result[i].io12);
 
                     // thêm tạo thời gian hiện tại 
                     var a = moment.tz(result[i]["time"], "Asia/Ho_Chi_Minh").format();
